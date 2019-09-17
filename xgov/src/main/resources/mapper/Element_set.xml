@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.com.yeexun.dataSet.dao.IElementSetDao">
+
+	<resultMap type="cn.com.yeexun.dataSet.entity.ElementSetEntity" id="ElementSetEntity">
+		<id property="id" column="Id" />
+		<result property="setId" column="set_id" />
+		<result property="elementId" column="element_id" />
+		<result property="createTime" column="create_time" />
+		<result property="lastModifyTime" column="last_modify_time" />
+	</resultMap>
+	
+	<select id="getBySetId" resultType="java.util.List" resultMap="ElementSetEntity">
+		 select * from tb_element_set where set_id = #{setId} 
+	</select>
+	
+</mapper>

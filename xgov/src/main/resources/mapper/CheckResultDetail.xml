@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.com.yeexun.qualityTask.dao.ICheckResultDetailDao">
+
+	<resultMap type="cn.com.yeexun.qualityTask.entity.CheckResult" id="CheckResult">
+		<id property="id" column="id" />
+		<result property="resultCountId" column="result_count_id" />
+		<result property="dataDetail" column="data_detail" />
+		<result property="errorType" column="error_type" />
+	</resultMap>
+	
+	<!-- <select id="getCheckResultByResultCountIdPage" resultType="java.util.List" resultMap="CheckResult">
+		SELECT *
+		FROM check_result_detail 
+		where result_count_id = #{resultCountId}
+	</select> -->
+	<select id="getCheckResultByResultCountId" resultType="java.util.List" resultMap="CheckResult">
+		select * from check_result_detail 
+		where result_count_id = #{resultCountId} 
+		and id >= (
+			select id 
+			from check_result_detail 
+			where result_count_id = #{resultCountId} 
+			limit #{page.start}, 1)
+		limit #{page.length}
+	</select>
+	
+	<select id="count" resultType="int">
+		select count(1) from check_result_detail 
+		where result_count_id = #{resultCountId} 
+	</select>
+</mapper>

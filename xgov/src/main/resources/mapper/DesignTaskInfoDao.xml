@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.com.yeexun.qualityTask.dao.IDesignTaskInfoDao">
+	<resultMap type="cn.com.yeexun.qualityTask.entity.DesignTaskInfo" id="DesignTaskInfo">
+		<id property="id" column="id" />
+		<result property="taskName" column="tas_name" />
+		<result property="taskType" column="task_type" />
+		<result property="cycleType" column="cycle_type" />
+		<result property="startTime" column="start_time" />
+		<result property="endTime" column="end_time" />
+		<result property="jobCron" column="job_cron" />
+		<result property="triggerTime" column="trigger_time" />
+		<result property="cronExpression" column="cron_expression" />
+		<result property="taskDetail" column="task_detail" />
+		<result property="alarmId" column="alarm_id" />
+		<result property="description" column="description" />
+		<result property="deleteFlag" column="delete_flag" />
+		<result property="createTime" column="create_time" />
+		<result property="createUser" column="create_user" />
+		<result property="updateTime" column="update_time" />
+		<result property="updateUser" column="update_user" />
+	</resultMap>
+	
+	<select id="getDatasourceIdByTaskId">
+		select a.datasource_id from design_table_info a 
+		join design_task_table b on a.id = b.table_id 
+		where b.is_del = 0 group by a.datasoutce_id
+	</select>
+	
+	<select id="getQualityTasksPage" resultType="cn.com.yeexun.qualityTask.entity.DesignTaskInfo">
+		
+		<!-- select c.*, b.datasource_id as datasource_id from design_task_table a 
+		join design_table_info b on a.table_id = b.id 
+		join design_task_info c on a.task_id = c.id 
+		where 1 = 1 
+		<if test="taskName != null and taskName != ''">  
+            and c.task_name = #{taskName}
+        </if>
+		group by c.id ,b.datasource_id 
+		order by c.create_time desc -->
+		
+		select a.*, c.datasource_id<!-- , d.datasource_name --> from design_task_info a 
+		<!-- join (
+			select distinct a.id as task_id from design_task_info a 
+			join design_task_table b 
+			on a.id = b.task_id 
+		) as b 
+		on a.id = b.task_id --> 
+		join (
+			select b.task_id as task_id, a.datasource_id as datasource_id from design_table_info a 
+			join design_task_table b 
+			on a.id = b.table_id 
+			and b.is_del = 0
+			group by b.task_id, a.datasource_id
+		) as c 
+		on a.id = c.task_id 
+		<!-- join tb_data_source d 
+		on c.datasource_id = d.id  -->
+		where 1 = 1
+		<if test="taskName != null and taskName != ''">  
+            and a.task_name like concat('%', #{taskName}, '%') 
+        </if>
+		order by a.create_time desc
+	</select>
+	
+	<select id="getTaskTables" resultType="cn.com.yeexun.qualityTask.entity.DesignTableInfo">
+		select * from design_table_info a 
+		left join design_task_table b 
+		on a.id = b.table_id 
+		where b.task_id = #{taskId}
+		and b.is_del &lt;&gt; 1
+	</select>
+	
+	<select id="getTaskTablesDetail" resultType="cn.com.yeexun.qualityTask.entity.QualityTaskDetail">
+		select * from quality_task_detail a 
+		join design_table_info b 
+		on a.datasource_id= b.datasource_id and a.table_name = b.table_name
+		join design_task_table c 
+		on b.id = c.table_id 
+		where a.delete_flag = '0'
+		and c.is_del &lt;&gt; 1
+		and verify_type &lt;&gt; '1'
+		and c.task_id = #{taskId} 
+		and b.table_name = #{tableName}
+	</select>
+	
+</mapper>

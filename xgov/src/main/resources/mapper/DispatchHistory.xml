@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.com.yeexun.dispatch.dao.IDispatchHistoryDao">
+
+	<resultMap type="cn.com.yeexun.dispatch.entity.DispatchHistory" id="DispatchHistory">
+		<id property="id" column="id" />
+		<result property="taskType" column="task_type" />
+		<result property="taskId" column="task_id" />
+		<result property="startTime" column="start_time" />
+		<result property="endTime" column="end_time" />
+		<result property="spent" column="spent" />
+		<result property="status" column="status" />
+	</resultMap>
+
+    
+	<!-- <select id="getMetadataByPid" resultType="java.util.List" resultMap="MetadataInfo">
+		select MD.* ,MM.metamodel_name from tb_metadata_info MD
+		         left join  tb_metamodel MM 
+	             on  MD.metamodel_id = MM.id
+	             where MD.parent_id = #{metadataid} and MD.is_del=0 
+	</select>
+	
+	<select id="getMetadataByPid3" resultType="java.util.List" resultMap="MetadataInfo">
+		select MD.* ,MM.metamodel_name from tb_metadata_info MD
+		         left join  tb_metamodel MM
+	             on  MD.metamodel_id = MM.id
+	             <if test="userId != null and userId != '' ">
+					left join tb_source_user T 
+				 	on MD.source_id = T.data_source_id
+				 </if>
+	             where MD.parent_id = #{metadataid} and MD.is_del=0 
+	             <if test="userId != null and userId != '' ">
+					and T.security_user_id=#{userId}
+				 </if>
+	</select> -->
+	
+	<select id="overview" resultType="cn.com.yeexun.dispatch.entity.TaskOverviewVo">
+		select 
+			sum(
+				case when a.status = '0' then 1 else 0 end
+			) as running_sum,
+			sum(
+				case when a.status = '1' then 1 else 0 end
+			) as successed_sum,
+			sum(
+				case when a.status = '2' then 1 else 0 end
+			) as failed_sum,
+			sum(1) as total_sum
+		from tb_dispatch_history a 
+		join 
+			(select task_id, max(start_time) max_time 
+				from tb_dispatch_history 
+				group by task_id
+			) as b 
+		on a.task_id = b.task_id and a.start_time = b.max_time
+	</select>
+	
+	<select id="listLastestHistoriesPage" resultType="cn.com.yeexun.dispatch.entity.DispatchHistory">
+		select 
+			a.*, c.id as dispatch_task_id, c.task_name, c.cycle_type, d.exec_count
+		from tb_dispatch_history a 
+		join 
+			(select task_id, task_type, max(start_time) max_time 
+				from tb_dispatch_history 
+				group by task_id, task_type
+			) as b 
+		on a.task_id = b.task_id and a.task_type = b.task_type and a.start_time = b.max_time
+		join tb_dispatch_task c 
+		on c.task_id = a.task_id and c.task_type = a.task_type 
+		left join (
+			select task_id, task_type, count(1) exec_count 
+			from tb_dispatch_history 
+			group by task_id, task_type
+		) as d 
+		on a.task_id = d.task_id and a.task_type = d.task_type 
+		where ifnull(c.delete_flag, 0) = 0
+		<if test="dispatchHistory.taskType != null and dispatchHistory.taskType != ''">  
+            and a.task_type = #{dispatchHistory.taskType}
+        </if>
+        <if test="dispatchHistory.status != null and dispatchHistory.status != ''">  
+            and a.status = #{dispatchHistory.status}
+        </if>
+        <if test="dispatchHistory.taskName != null and dispatchHistory.taskName != ''">  
+            and c.task_name like concat('%', #{dispatchHistory.taskName}, '%')
+        </if>
+        order by a.start_time desc
+        
+	</select>
+	
+	<select id="listHistoriesByTaskIdPage" resultType="cn.com.yeexun.dispatch.entity.DispatchHistory">
+		select 
+			*
+		from tb_dispatch_history
+		where 1 = 1 and task_type = '1' and task_id = #{hisQueryVo.taskId}
+        <if test="hisQueryVo.status != null and hisQueryVo.status != ''">  
+            and status = #{hisQueryVo.status}
+        </if>
+        <if test="hisQueryVo.startTimeLower != null and hisQueryVo.startTimeLower != ''">  
+            and start_time between #{hisQueryVo.startTimeLower} and #{hisQueryVo.startTimeUpper}
+        </if>
+        <if test="hisQueryVo.endTimeLower != null and hisQueryVo.endTimeLower != ''">  
+            and start_time between #{hisQueryVo.endTimeLower} and #{hisQueryVo.endTimeUpper}
+        </if>
+        order by start_time desc
+        
+	</select>
+	
+</mapper>

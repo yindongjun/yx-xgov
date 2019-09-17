@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>关系图案例</title>
+    <!-- 引入 ECharts 文件 -->
+    <script type="text/javascript" src="js/echarts-all.js"></script>
+    <script type="text/javascript" src="js/jquery.js"></script>
+</head>
+<body>
+<!-- 为 ECharts 准备一个具备大小（宽高）的 容器 -->
+<div  style="width:1000px;height:800px;" id="gx"></div>tooltip
+</body>
+</html>
+<script type="text/javascript">
+    var myChart = echarts.init(document.getElementById('gx'));
+    option = {
+        title : {
+            text: '人物关系：乔布斯',
+            subtext: '数据来自人立方',
+            x:'right',
+            y:'bottom'
+        },
+        tooltip : {
+            trigger: "axis",
+            trigger: 'item',
+            formatter: '{a} : {b}'
+//            formatter:function (param) {
+//                var data = param.data;
+//                var links = option.series[0].links;
+//                var nodes = option.series[0].nodes;
+//                if (
+//                    data.source !== undefined
+//                    && data.target !== undefined
+//                ) { //点击的是边
+//                    var sourceNode = nodes.filter(function (n) {return n.name == data.source})[0];
+//                    var targetNode = nodes.filter(function (n) {return n.name == data.target})[0];
+//                    return ("选中了边 " + sourceNode.name + ' -> ' + targetNode.name + ' (' + data.weight + ')');
+//                } else { // 点击的是点
+//                    return ("选中了" + data.name + '(' + data.value + ')');
+//                }
+//            }
+        },
+        toolbox: {
+            show : true,
+            feature : {
+                restore : {show: true},
+                magicType: {show: true, type: ['force', 'chord']},
+                saveAsImage : {show: true}
+            }
+        },
+        legend: {
+            x: 'left',
+            data:['人物','家人','朋友']
+        },
+        series : [
+            {
+                type:'force',
+                name : "人物关系",
+                ribbonType: false,
+                categories : [
+                    {
+                        name: '人物'
+                    },
+                    {
+                        name: '家人'
+                    },
+                    {
+                        name:'朋友'
+                    }
+                ],
+                itemStyle: {
+                    normal: {
+                        label: {
+                            show: true,
+                            textStyle: {
+                                color: '#333'
+                            }
+                        },
+                        nodeStyle : {
+                            brushType : 'both',
+                            borderColor : 'rgba(255,215,0,0.4)',
+                            borderWidth : 1
+                        },
+                        linkStyle: {
+                            type: 'curve'
+                        }
+                    },
+                    emphasis: {
+                        label: {
+                            show: false
+                            // textStyle: null      // 默认使用全局文本样式，详见TEXTSTYLE
+                        },
+                        nodeStyle : {
+                            //r: 30
+                        },
+                        linkStyle : {}
+                    }
+                },
+                useWorker: false,
+                minRadius : 15,
+                maxRadius : 25,
+                gravity: 1.1,
+                scaling: 1.1,
+                roam: 'move',
+                nodes:[
+                    {category:0, name: '乔布斯', value : 10, label: '乔布斯\n（主要）'},
+                    {category:1, name: '丽萨-乔布斯',value : 2},
+                    {category:1, name: '保罗-乔布斯',value : 3},
+                    {category:1, name: '克拉拉-乔布斯',value : 3},
+                    {category:1, name: '劳伦-鲍威尔',value : 7},
+                    {category:2, name: '史蒂夫-沃兹尼艾克',value : 5},
+                    {category:2, name: '奥巴马',value : 8},
+                    {category:2, name: '比尔-盖茨',value : 9},
+                    {category:2, name: '乔纳森-艾夫',value : 4},
+                    {category:2, name: '蒂姆-库克',value : 4},
+                    {category:2, name: '龙-韦恩',value : 1},
+                ],
+                links : [
+                    {source : '丽萨-乔布斯', target : '乔布斯', weight : 1, name: '女儿'},
+                    {source : '保罗-乔布斯', target : '乔布斯', weight : 2, name: '父亲'},
+                    {source : '克拉拉-乔布斯', target : '乔布斯', weight : 1, name: '母亲'},
+                    {source : '劳伦-鲍威尔', target : '乔布斯', weight : 2},
+                    {source : '史蒂夫-沃兹尼艾克', target : '乔布斯', weight : 3, name: '合伙人'},
+                    {source : '奥巴马', target : '乔布斯', weight : 1},
+                    {source : '比尔-盖茨', target : '乔布斯', weight : 6, name: '竞争对手'},
+                    {source : '乔纳森-艾夫', target : '乔布斯', weight : 1, name: '爱将'},
+                    {source : '蒂姆-库克', target : '乔布斯', weight : 1},
+                    {source : '龙-韦恩', target : '乔布斯', weight : 1},
+                    {source : '克拉拉-乔布斯', target : '保罗-乔布斯', weight : 1},
+                    {source : '奥巴马', target : '保罗-乔布斯', weight : 1},
+                    {source : '奥巴马', target : '克拉拉-乔布斯', weight : 1},
+                    {source : '奥巴马', target : '劳伦-鲍威尔', weight : 1},
+                    {source : '奥巴马', target : '史蒂夫-沃兹尼艾克', weight : 1},
+                    {source : '比尔-盖茨', target : '奥巴马', weight : 6},
+                    {source : '比尔-盖茨', target : '克拉拉-乔布斯', weight : 1},
+                    {source : '蒂姆-库克', target : '奥巴马', weight : 1}
+                ]
+            }
+        ]
+    };
+    //    var ecConfig = require('echarts/config');
+    function focus(param) {
+        var data = param.data;
+        var links = option.series[0].links;
+        var nodes = option.series[0].nodes;
+        if (
+            data.source !== undefined
+            && data.target !== undefined
+        ) { //点击的是边
+            var sourceNode = nodes.filter(function (n) {return n.name == data.source})[0];
+            var targetNode = nodes.filter(function (n) {return n.name == data.target})[0];
+            console.log("选中了边 " + sourceNode.name + ' -> ' + targetNode.name + ' (' + data.weight + ')');
+        } else { // 点击的是点
+            console.log("选中了" + data.name + '(' + data.value + ')');
+        }
+    }
+    myChart.on( echarts.config.EVENT.CLICK, focus);
+
+    myChart.on( echarts.config.EVENT.FORCE_LAYOUT_END, function () {
+        console.log(myChart.chart.force.getPosition());
+    });
+
+    myChart.setOption(option);
+</script>
+
+<script>
+
+    var json1=[
+        {"id":"0","name":"Myriel","itemStyle":null,"symbolSize":19.12381,"x":-266.82776,"y":299.6904,"attributes":{"modularity_class":0},"value":28.685715,"label":{"normal":{"show":false}},"category":0},{"id":"1","name":"Napoleon","itemStyle":null,"symbolSize":2.6666666666666665,"x":-418.08344,"y":446.8853,"attributes":{"modularity_class":0},"value":4,"label":{"normal":{"show":false}},"category":0},{"id":"2","name":"MlleBaptistine","itemStyle":null,"symbolSize":6.323809333333333,"x":-212.76357,"y":245.29176,"attributes":{"modularity_class":1},"value":9.485714,"label":{"normal":{"show":false}},"category":1},{"id":"3","name":"MmeMagloire","itemStyle":null,"symbolSize":6.323809333333333,"x":-242.82404,"y":235.26283,"attributes":{"modularity_class":1},"value":9.485714,"label":{"normal":{"show":false}},"category":1},{"id":"4","name":"CountessDeLo","itemStyle":null,"symbolSize":2.6666666666666665,"x":-379.30386,"y":429.06424,"attributes":{"modularity_class":0},"value":4,"label":{"normal":{"show":false}},"category":0},{"id":"5","name":"Geborand","itemStyle":null,"symbolSize":2.6666666666666665,"x":-417.26337,"y":406.03506,"attributes":{"modularity_class":0},"value":4,"label":{"normal":{"show":false}},"category":0},{"id":"6","name":"Champtercier","itemStyle":null,"symbolSize":2.6666666666666665,"x":-332.6012,"y":485.16974,"attributes":{"modularity_class":0},"value":4,"label":{"normal":{"show":false}},"category":0},{"id":"7","name":"Cravatte","itemStyle":null,"symbolSize":2.6666666666666665,"x":-382.69568,"y":475.09113,"attributes":{"modularity_class":0},"value":4,"label":{"normal":{"show":false}},"category":0},{"id":"8","name":"Count","itemStyle":null,"symbolSize":2.6666666666666665,"x":-320.384,"y":387.17325,"attributes":{"modularity_class":0},"value":4,"label":{"normal":{"show":false}},"category":0},{"id":"9","name":"OldMan","itemStyle":null,"symbolSize":2.6666666666666665,"x":-344.39832,"y":451.16772,"attributes":{"modularity_class":0},"value":4,"label":{"normal":{"show":false}},"category":0},{"id":"10","name":"Labarre","itemStyle":null,"symbolSize":2.6666666666666665,"x":-89.34107,"y":234.56128,"attributes":{"modularity_class":1},"value":4,"label":{"normal":{"show":false}},"category":1},{"id":"11","name":"Valjean","itemStyle":null,"symbolSize":66.66666666666667,"x":-87.93029,"y":-6.8120565,"attributes":{"modularity_class":1},"value":100,"label":{"normal":{"show":true}},"category":1},{"id":"12","name":"Marguerite","itemStyle":null,"symbolSize":4.495239333333333,"x":-339.77908,"y":-184.69139,"attributes":{"modularity_class":1},"value":6.742859,"label":{"normal":{"show":false}},"category":1},{"id":"13","name":"MmeDeR","itemStyle":null,"symbolSize":2.6666666666666665,"x":-194.31313,"y":178.55301,"attributes":{"modularity_class":1},"value":4,"label":{"normal":{"show":false}},"category":1},{"id":"14","name":"Isabeau","itemStyle":null,"s ymbolSize":2.6666666666666665,"x":-158.05168,"y":201.99768,"attributes":{"modularity_class":1},
+    ]
+</script>
+
+

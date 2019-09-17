@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.com.yeexun.qualityTask.dao.IDesignTableInfoDao">
+
+	<resultMap type="cn.com.yeexun.qualityTask.entity.DesignTableInfo" id="DesignTableInfo">
+		<id property="id" column="id" />
+		<result property="datasourceId" column="datasource_id" />
+		<result property="taskName" column="task_name" />
+		<result property="tableName" column="table_name" />
+		<result property="status" column="status" />
+		<result property="createTime" column="create_time" />
+		<result property="updateTime" column="update_time" />
+		<result property="createUser" column="create_user" />
+		<result property="updateUser" column="update_user" />
+		<result property="deleteFlag" column="delete_flag" />
+		<!-- <result property="cycleType" column="cycle_type" />
+		<result property="startTime" column="start_time" />
+		<result property="endTime" column="end_time" />
+		<result property="jobCron" column="job_cron" />
+		<result property="moveRightdata" column="move_rightdata" />
+		<result property="moveErrordata" column="move_errordata" />
+		<result property="rightSourceId" column="right_source_id" />
+		<result property="errorSourceId" column="error_source_id" /> -->
+		<result property="description" column="description" />
+		<result property="changeNotice" column="change_notice" />
+		<!-- <result property="taskDetail" column="task_detail" />
+		<result property="alarmId" column="alarm_id" /> -->
+		<result property="isRuleChange" column="is_rule_change" />
+		<!-- <result property="triggerTime" column="trigger_time" /> -->
+		<result property="isDispatch" column="is_dispatch" />
+	</resultMap>
+	
+	<resultMap type="cn.com.yeexun.qualityTask.entity.QualityTableCountVo" id="countMap">
+		<result property="datasourceId" column="datasource_id" />
+		<result property="tableNum" column="table_num" />
+	</resultMap>
+	<select id="getTableDesignList" resultType="java.util.List" resultMap="DesignTableInfo">
+		select *  from design_table_info  
+		where datasource_id = #{sourceId} and delete_flag = "0"
+	</select>   
+	
+    <!-- <select id="getByRuleId" resultType="cn.com.yeexun.qualityTask.entity.DesignTableInfo" resultMap="DesignTableInfo">
+		select *  from design_table_info  where rule_id = #{ruleId} and delete_flag = "0"
+	</select> --> 
+	
+	
+	<select id="getDesignTableInfo"  resultMap="DesignTableInfo">
+		select *  from design_table_info  where Id = #{id} and delete_flag = "0"
+	</select>
+	
+	<!-- <select id="getChangeTableInfo" resultType="java.util.List" resultMap="DesignTableInfo">
+		select *  from design_table_info  where design_source_id = #{designSourceId} 
+		and delete_flag = "0" and is_rule_change = "Y" and (status = "1" or status = "2")
+	</select> -->
+	
+	<!-- <select id="getByDesignSourceId" resultType="java.util.List" resultMap="DesignTableInfo">
+		select *  from design_table_info  where design_source_id = #{designSourceId} 
+		and delete_flag = "0"
+	</select> -->
+	
+	<!-- <update id="deleteTableInfo">
+		update design_table_info  set delete_flag = "1" where design_source_id = #{sourceInfoId} 
+	</update> -->
+	
+	<!-- <select id="findBySourceId" resultType="cn.com.yeexun.qualityTask.entity.DesignTableInfo">
+		select a.* from design_table_info a 
+		join design_source_info b on b.id = a.design_source_id 
+		where b.source_id = #{sourceId} and a.delete_flag = '0'
+	</select> -->
+	
+	<!-- <select id="getBySourceAndTableName" resultType="cn.com.yeexun.qualityTask.entity.DesignTableInfo">
+		select a.* from design_table_info a 
+		join design_source_info b on b.id = a.design_source_id 
+		where b.id = #{designSourceId} and a.delete_flag = '0' and a.table_name = #{tableName}
+	</select> -->
+	
+	<update id="deleteQualityTasks">
+		update design_table_info 
+		set is_dispatch = 0 
+		where id in (#{tableDesignIds})
+	</update>
+	
+	<select id="getBySourceAndTable" resultMap="DesignTableInfo">
+		select * from design_table_info 
+		where datasource_id = #{datasourceId} and table_name = #{name}
+		and delete_flag = '0' <!-- and status = '2' -->
+	</select>
+	
+	<select id="countQualityTable" resultType="java.util.List" resultMap="countMap">
+		select datasource_id, count(1) as table_num 
+		from design_table_info 
+		where status in (0, 2) 
+		and delete_flag = '0'
+		group by datasource_id
+	</select>
+	
+	<select id="findByIds" resultType="java.util.List" resultMap="DesignTableInfo">
+		select datasource_id from design_table_info 
+		where id in (${ids}) 
+		and delete_flag = '0' 
+		group by datasource_id
+	</select>
+	
+	<select id="listReportTables" resultType = "cn.com.yeexun.qualityTask.entity.DesignTableInfo">
+		select a.*<!-- , c.datasource_name as source_name  -->
+		from design_table_info a 
+		join (
+			select a.id as id from design_table_info a 
+			join design_task_table b 
+			on b.table_id = a.id 
+			join tb_dispatch_history c 
+			on c.task_id = b.task_id 
+			where c.task_type = '1' 
+			and c.status = '1'
+			group by a.id
+		) b 
+		on a.id = b.id 
+		<!-- join tb_data_source c 
+		on a.datasource_id = c.id -->
+	</select>
+	
+	<select id="getQualityTaskIdBySourceId" resultType="cn.com.yeexun.qualityTask.entity.QualityTaskDetail">
+		select distinct(a.id) as id from design_task_info a 
+		left join design_task_table b 
+		on a.id = b.task_id 
+		left join design_table_info c 
+		on c.id = b.table_id 
+		where c.datasource_id = #{sourceId} and a.delete_flag &lt;&gt; '1'
+	</select>
+</mapper>

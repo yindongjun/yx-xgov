@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace ="cn.com.yeexun.mainData.dao.MainDataDao" >
+
+	<resultMap type= "cn.com.yeexun.mainData.entity.MainData" id="maindata">
+		<id	property = "id" column = "id" />
+		<result property = "dataName" column = "data_name" /> 
+		<result property = "dataSourceId" column = "data_source_id" />
+		<result property = "createTime" column = "create_time" /> 
+		<result property = "updateTime" column = "update_time" /> 
+		<result property = "serverAddress" column = "server_address" /> 
+		<result property = "createUser" column = "create_user" /> 
+		<result property = "updateUser" column = "update_user" /> 
+		<result property = "isdel" column = "isdel" /> 
+		<result property = "tableNumber" column = "table_number"/>
+
+	</resultMap>
+	<resultMap type="cn.com.yeexun.dataSource.entity.DataSource" id="DataSource">
+		<id property="id" column="id" />
+		<result property="datasourceName" column="datasource_name" />
+		<result property="databaseType" column="database_type" />
+		<result property="characterSet" column="character_set" />
+		<result property="ip" column="ip" />
+		<result property="port" column="port" />
+		<result property="url" column="url" />
+		<result property="userName" column="user_name" />
+		<result property="password" column="password" />
+		<result property="addTime" column="add_time" />
+		<result property="isdel" column="isdel" />
+		<result property="dbname" column="dbname" />
+		<result property="driver" column="driver" />
+		<result property="createTime" column="create_time" />
+		<result property="lastModifyTime" column="last_modify_time" />
+		<result property="schemasName" column="schemas_name" /> 
+		<result property="urlConfig" column="urlconfig" /> 
+		<result property="sourceLayerId" column="source_layer_id" />
+		<result property="departmentId" column="department_id" />
+	</resultMap>
+	
+	<!-- 展示不再主数据里的关系型数据库 -->
+	<!-- <select id="getDatasource" resultType = "java.util.List" resultMap = "DataSource">
+		SELECT ds.* FROM tb_data_source ds WHERE ds.id NOT IN (
+			SELECT md.data_source_id FROM main_data md WHERE md.isdel=0
+		) AND ds.database_type IN (
+			'MySQL','Oracle','SqlServer','PostgreSQL','DB2','Sybase','Teradata'
+		) AND ds.isdel=0
+	</select> -->
+	
+	<!-- 查看已经配置了主数据的数据源id -->
+	<select id="getMainDataSourceId" resultType="long">
+		select distinct data_source_id from main_data where isdel = 0
+	</select>
+	 
+	 <!-- 查询传入的数据源是否存在 -->
+	<select id="getDataSByDSIds" resultType="java.util.List" resultMap="maindata" parameterType="java.util.List">
+		SELECT * FROM main_data WHERE data_source_id in 
+		<foreach collection="DSId" index="index" item="DSId" open="(" separator="," close=")">
+			#{DSId}
+		</foreach>
+		and isdel=0
+	</select>
+	
+	<select id="getMainDataByNamePage" resultType="java.util.List" resultMap="maindata">
+	
+		<!-- SELECT d.*,(
+			SELECT COUNT(*) FROM main_data_detail mdd WHERE d.id=mdd.main_data_id
+		) as table_number FROM main_data d
+		left join tb_data_source s on s.id = d.data_source_id
+		WHERE 1=1 
+		<if test="maindataName != null and maindataName != ''">  
+            and d.data_name like CONCAT('%',#{maindataName},'%')
+        </if>
+        <if test="type != null and type != ''">  
+            and s.database_type = #{type}
+        </if>
+		and d.isdel=0 and s.isdel=0 -->
+		select a.*, ifnull(b.count, 0) as table_number 
+		from main_data a 
+		left join (
+			select count(1) as count, d.id as id 
+			from main_data_detail a 
+			join main_data d 
+			on d.id = a.main_data_id 
+			group by d.id 
+		) as b 
+		on a.id = b.id 
+		<!-- join tb_data_source c 
+		on c.id = a.data_source_id  -->
+		where a.isdel = 0<!--  and c.isdel = 0 -->
+		<if test="maindataName != null and maindataName != ''">  
+            and a.data_name like CONCAT('%', #{maindataName}, '%')
+        </if>
+        <!-- <if test="type != null and type != ''">  
+            and c.database_type = #{type}
+        </if> -->
+	</select>
+	
+	
+	<update id="deleteTables" parameterType="java.lang.Long" >
+		update main_data set isdel=1 where id=#{mainDataId} 
+	</update>
+</mapper>

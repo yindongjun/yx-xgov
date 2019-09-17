@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.com.yeexun.meta_data.dao.IMetadataDao">
+
+	<resultMap type="cn.com.yeexun.meta_data.entity.Metadata" id="Metadata">
+		<id property="id" column="Id" />
+		<result property="parentId" column="parent_id" />
+		<result property="name" column="name" />
+		<result property="code" column="code" />
+		<result property="parentCode" column="parent_code" />
+		<result property="isMenu" column="is_menu" />
+		<result property="buildin" column="buildin" />
+		<result property="sourceId" column="source_id" />
+		<result property="metamodelId" column="metamodel_id" />
+		<result property="createUserId" column="create_user_id" />
+		<result property="path" column="path" />
+		<result property="metadataType" column="metadata_type" />
+		<result property="version" column="version" />
+		<result property="createTime" column="create_time" />
+		<result property="lastModifyTime" column="last_modify_time" />
+		<result property="isRelease" column="is_release" />
+		<result property="collectId" column="collect_id" />
+		<result property="versionDescription" column="version_description" />
+		<result property="deleteFlag" column="delete_flag" />
+		<result property="versionName" column="versionName" />
+	</resultMap>
+	
+	<select id="getmetadataByName" resultType="java.util.List" resultMap="Metadata">
+		 select * from tb_metadata where delete_flag = '0' and is_menu = "Y"
+		 and name=#{name}
+	</select>
+	
+	<!-- <select id="getMetadataVersion" resultType="java.util.List" resultMap="Metadata">
+		 select *,concat_ws('_',code,version) as versionName from tb_metadata 
+		 where unique_code = #{uniqueCode} 
+		 and (is_release = 1 or is_release is null)  
+	</select> -->
+	
+	<select id="getMetadataVersion" resultType="java.util.List" resultMap="Metadata">
+		select *,concat_ws('_',code,version) as versionName from tb_metadata 
+		where 1=1
+		<if test="metadata.parentCode != null and metadata.parentCode != ''">  
+            and parent_code = #{metadata.parentCode}
+        </if> 
+        <if test="metadata.code != null and metadata.code != ''">  
+            and code = #{metadata.code}
+        </if> 
+        <if test="metadata.metamodelId != null and metadata.metamodelId != ''">  
+            and metamodel_id = #{metadata.metamodelId}
+        </if> 
+        <if test="metadata.sourceId != null and metadata.sourceId != ''">  
+            and source_id = #{metadata.sourceId}
+        </if> 
+        <if test="metadata.path != null and metadata.path != ''"> 
+            and path = #{metadata.path}
+        </if> 
+		and (is_release = 1 or is_release is null)  
+	</select>
+	
+	<select id="getMetadataVersionPage" resultType="java.util.List" resultMap="Metadata">
+		 select *,concat_ws('_',code,version) as versionName from tb_metadata 
+		where 1=1
+		
+		<if test="metadata.code != null and metadata.code != ''">  
+            and code = #{metadata.code}
+        </if>
+		<if test="metadata.parentCode != null and metadata.parentCode != ''">  
+            and parent_code = #{metadata.parentCode}
+        </if> 
+         
+        <if test="metadata.metamodelId != null and metadata.metamodelId != ''">  
+            and metamodel_id = #{metadata.metamodelId}
+        </if> 
+        <if test="metadata.sourceId != null and metadata.sourceId != ''">  
+            and source_id = #{metadata.sourceId}
+        </if> 
+        <if test="metadata.path != null and metadata.path != ''">  
+            and path = #{metadata.path}
+        </if> 
+		and (is_release = 1 or is_release is null) 
+		order by last_modify_time desc
+	</select>
+	
+	<!-- <select id="getMetaByUniqueCode" resultType="java.util.List" resultMap="Metadata">
+	<select id="getMetadataVersionPage" resultType="java.util.List" resultMap="Metadata">
+		 select *,concat_ws('_',code,version) as versionName from tb_metadata 
+		 where unique_code = #{uniqueCode} 
+		 and (is_release != 0 or is_release is null)  
+	</select>
+	
+	<select id="getMetaByUniqueCode" resultType="java.util.List" resultMap="Metadata">
+		select *  from tb_metadata tb where tb.unique_code = #{uniqueCode}
+		and (tb.is_release != 0 or tb.is_release is null) 
+		order by version desc
+	</select> -->
+	<select id="getMetaByUniqueCode" resultType="java.util.List" resultMap="Metadata">
+		select *  from tb_metadata 
+        where code = #{code}
+        <if test="parentCode != null and parentCode != ''">  
+            and parent_code = #{parentCode}
+        </if>
+		and metamodel_id = #{metamodelId}
+		and source_id = #{sourceId}
+		<if test="path != null and path != ''">  
+            and path = #{path}
+        </if>
+		and (is_release != 0 or is_release is null) 
+		order by version desc
+	</select>
+    
+	<select id="getMenuList" resultType="java.util.List" resultMap="Metadata">
+		 select * from tb_metadata where metadata_type = #{menuType} and parent_id = 0
+		 and (is_release != 0 or is_release is null) and delete_flag = '0'
+	</select>
+	
+	<select id="serchMetadata" resultType="java.util.List" resultMap="Metadata">
+		select * from tb_metadata tb 
+		where tb.metadata_type = #{menuType} and tb.delete_flag = '0'
+		and (tb.is_release != 0 or tb.is_release is null)
+		<if test="searchKey != null and searchKey != ''">  
+            and tb.name like concat('%',#{searchKey},'%')
+        </if> 
+	</select>
+	
+	<select id="getmetadataByPid" resultType="java.util.List" resultMap="Metadata">
+		 select * from tb_metadata tb where parent_id = #{pid} and tb.delete_flag = '0'
+		  and (tb.is_release = 1) 
+         order by tb.id
+	</select>
+	
+	<select id="getmetaByPidAndModel" resultType="java.util.List" resultMap="Metadata">
+		 select * from tb_metadata tb where parent_id = #{pid} and metamodel_id = #{modelId}
+		  and (tb.is_release != 0 or tb.is_release is null)  
+         order by tb.id
+	</select>
+	
+	<select id="getmetadataByModelId" resultType="java.util.List" resultMap="Metadata">
+		 select * from tb_metadata tb where metamodel_id = #{modelId}
+		  and (tb.is_release != 0 or tb.is_release is null)  
+		 <if test="searchKey != null and searchKey != '' ">
+				and tb.code like concat('%',#{searchKey},'%')
+		 </if>
+         order by tb.id
+	</select>
+	
+	<select id="getUnreleaseCollects" resultType="cn.com.yeexun.meta_data.entity.Metadata">
+		select a.collect_id, b.start_time as start_time 
+		from tb_metadata a
+		join tb_dispatch_history b 
+		on a.collect_id = b.id 
+		where a.source_id = #{sourceId} and a.is_release = 0 
+		group by a.collect_id, b.start_time
+		order by a.collect_id desc
+	</select>
+	
+	<!-- <select id="getLastestVer" resultType="cn.com.yeexun.meta_data.entity.Metadata">
+		select 
+			a.*, b.max_version version  
+		from tb_metadata a 
+		join (
+			select parent_code, code, metamodel_id, source_id, path, max(version) max_version 
+			from tb_metadata 
+			where is_release = 1 
+			group by parent_code, code, metamodel_id, source_id, path 
+		) b 
+		on a.code = b.code
+		and a.metamodel_id = b.metamodel_id
+		and a.source_id = b.source_id
+		and a.version = b.max_version 
+        and ifnull(a.parent_code, '') = ifnull(b.parent_code, '') 
+        and ifnull(a.path, '') = ifnull(b.path, '')
+		where a.source_id = #{sourceId} 
+		and a.is_release = 1 
+		and a.metamodel_id = #{metamodelId} 
+		and a.delete_flag = '0'
+		<if test="parentId != null and parentId != '' ">
+			and a.parent_id = #{parentId}
+		</if>
+	</select> -->
+	<select id="getLastestVer" resultType="cn.com.yeexun.meta_data.entity.Metadata">
+		select 
+			a.*,(select max(version) from tb_metadata b where 
+		b.source_id = #{sourceId} 
+		and b.is_release = 1 
+		and b.metamodel_id = #{metamodelId} 
+		and b.delete_flag = '0'
+		) max_version
+		from tb_metadata a 
+		where a.source_id = #{sourceId} 
+		and a.is_release = 1 
+		and a.metamodel_id = #{metamodelId} 
+		and a.delete_flag = '0'
+		<if test="parentId != null and parentId != '' ">
+			and a.parent_id = #{parentId}
+		</if>
+	</select>
+	
+	<select id="getUnreleaseVer" resultType="cn.com.yeexun.meta_data.entity.Metadata">
+		select * from tb_metadata 
+		where collect_id = #{collectId} 
+		and is_release = 0 and source_id = #{sourceId} and metamodel_id = #{metamodelId}
+	</select>
+	
+	<select id="getMetadataDirs" resultType="cn.com.yeexun.meta_data.entity.Metadata">
+		select * from tb_metadata where metadata_type = #{metadataType} and is_menu = 'Y'
+	</select>
+	
+	<select id="getNodesByParentId" resultType="cn.com.yeexun.meta_data.entity.Metadata">
+		select 
+			* 
+		from tb_metadata 
+		where is_menu = 'Y' 
+		and metadata_type = #{metadataType} 
+		and parent_id = #{parentId} 
+	</select>
+	
+	<update id="deleteOldVersion">
+		update tb_metadata 
+		set delete_flag = '1' 
+		where source_id = #{sourceId} 
+			and is_release = 1 and delete_flag = '0' and collect_id &lt; #{collectHisId} 
+			and metamodel_id = #{sourceLevalModelId}
+	</update>
+	
+	<select id="serchMetadataV2Page" resultType="java.util.List" resultMap="Metadata">
+		select * from tb_metadata tb 
+		where tb.delete_flag = '0' and is_menu = 'N' and tb.delete_flag = '0'
+		and (tb.is_release != 0 or tb.is_release is null)
+		<if test="searchKey != null and searchKey != ''">  
+            and tb.name like concat('%',#{searchKey},'%')
+        </if> 
+	</select>
+	
+	
+	<update id="deleteList" >
+		UPDATE  tb_metadata SET delete_flag = '1'  WHERE id in 
+		<foreach collection="list" item="item" open="(" separator="," close=")">
+	  		${item}
+	 	</foreach>
+	</update>
+
+	<update id="releaseVersion" parameterType="cn.com.yeexun.meta_data.entity.Metadata">
+		update tb_metadata a 
+		inner join (
+			select 
+				b.id, 
+				(
+					select max(version) from tb_metadata c 
+					where ifnull(c.parent_code, '') = ifnull(b.parent_code, '')
+					and c.code = b.code
+					and c.metamodel_id = b.metamodel_id
+					and c.source_id = b.source_id 
+					<if test="datasourceType == 'HDFS'">  
+			            and c.path = b.path
+			        </if> 
+				) max_version 
+			from tb_metadata b 
+			where b.collect_id = #{metadata.collectId} 
+		) b on a.id = b.id
+		set
+			a.is_release = #{metadata.isRelease},
+			a.version_description = #{metadata.versionDescription},
+			a.version = ifnull(b.max_version, 0) + 1
+	</update>
+	
+	<select id="findUnreleaseCollectHisPage" resultType="cn.com.yeexun.dispatch.entity.DispatchHistory">
+		select a.id, a.start_time, a.spent 
+		from tb_dispatch_history a
+		join (
+			select collect_id from tb_metadata 
+			where source_id = #{sourceId} and is_release = 0 and delete_flag = '0'
+			group by collect_id
+		) b
+		on a.id = b.collect_id 
+		where a.status = '1' order by id desc
+	</select>
+	
+	<delete id="deleteMetadata">
+		delete from tb_metadata
+		where collect_id &lt; #{collectId} 
+        and is_release = 0 and delete_flag = '0'
+        and source_id = #{sourceId}
+	</delete>
+	
+	<select id="getBySourceId" resultType="java.util.List" resultMap="Metadata">
+		select * from tb_metadata where source_id =#{sourceId}   
+		and  metamodel_id = 27 and delete_flag = '0'
+	</select>
+	
+	<update id="deleteBySourceId" >
+		UPDATE  tb_metadata SET delete_flag = '1'  
+		WHERE source_id = #{sourceId}
+	</update>
+	
+</mapper>

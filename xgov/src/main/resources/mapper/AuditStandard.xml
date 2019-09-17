@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.com.yeexun.standardAudit.dao.IStandardAuditDao">
+	<resultMap type="cn.com.yeexun.standardAudit.entity.StandardAudit" id="StandardAudit">
+		<id property="id" column="id" />
+		<result property="taskName" column="task_name" />
+		<result property="type" column="type" />
+		<result property="submitter" column="submitter" />
+		<result property="submitTime" column="submit_time" />
+		<result property="status" column="status" />
+		<result property="flowId" column="flow_id" />
+		<result property="comment" column="comment" />
+		<result property="auditResult" column="audit_result" />
+		<result property="auditor" column="auditor" />
+		<result property="auditTime" column="audit_time" />
+		<result property="changeInfo" column="change_info" />
+	</resultMap>
+	
+	<select id="listStandardAuditPage" resultType="java.util.List" resultMap="StandardAudit">
+	    select  * from tb_standard_audit
+        where 1=1
+        <if test="auditResult != null and auditResult != ''">  
+            and audit_result=#{auditResult}
+        </if> 
+        <if test="status != null and status != ''">  
+            and status=#{status}
+        </if> 
+        <if test="type != null and type != ''">  
+            and type=#{type}
+        </if> 
+        <if test="taskName != null and taskName != ''">  
+            and task_name like concat('%',#{taskName},'%') 
+         </if>
+	    order by submit_time DESC, id
+	</select>
+	
+	<select id="getByFlowId" resultType="java.util.List" resultMap="StandardAudit">
+	     select * from tb_standard_audit where type=#{type} and flow_id = #{flowId}
+	</select>
+	
+	<select id="changeDetail" resultMap="StandardAudit">
+		select a.*, b.change_info from tb_standard_audit a 
+		left join 
+		<if test='type == "0"'>  
+            tb_data_element
+        </if>
+        <if test='type == "1"'>  
+            tb_data_set
+        </if>
+        <if test='type == "2"'>  
+            tb_code
+        </if>
+        
+        <!-- <if test="type == '2'">  
+            tb_code
+        </if> -->
+        as b 
+        on a.flow_id = b.id 
+        where a.id = #{id}
+	</select>
+</mapper>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.com.yeexun.standardAudit.dao.IAuditDetailDao">
+	<resultMap type="cn.com.yeexun.standardAudit.entity.AuditDetail" id="AuditDetail">
+		<id property="id" column="id" />
+		<result property="auditor" column="auditor" />
+		<result property="auditTime" column="audit_time" />
+		<result property="auditResult" column="audit_result" />
+		<result property="auditDesc" column="audit_desc" />
+		<result property="standardAuditId" column="standard_audit_id" />
+	</resultMap>
+	
+	<select id="listAuditDetailPage" resultType="java.util.List" resultMap="AuditDetail">
+	     select  * from tb_standard_audit_detail
+        where standard_audit_id=#{standardAuditId}
+	    order by audit_time DESC
+	</select>
+</mapper>

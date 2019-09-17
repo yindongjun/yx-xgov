@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.com.yeexun.dispatch.dao.IDispatchTaskDao">
+
+	<resultMap type="cn.com.yeexun.dispatch.entity.DispatchTask" id="DispatchTask">
+		<id property="id" column="id" />
+		<result property="taskName" column="task_name" />
+		<result property="taskType" column="task_type" />
+		<result property="taskId" column="task_id" />
+		<result property="createTime" column="create_time" />
+		<result property="lastModifyTime" column="last_modify_time" />
+		<result property="deleteFlag" column="delete_flag" />
+		<result property="cycleType" column="cycle_type" />
+		<result property="startTime" column="start_time" />
+		<result property="endTime" column="end_time" />
+		<result property="jobCron" column="job_cron" />
+		<result property="status" column="status" />
+		<result property="alarmId" column="alarm_id" />
+		<result property="triggerTime" column="trigger_time" />
+		<result property="cronExpression" column="cron_expression" />
+		<result property="cronDescription" column="cron_description" />
+		<result property="alarmName" column="alarmName" />
+	</resultMap>
+
+    <select id="getTaskById" resultType="cn.com.yeexun.dispatch.entity.DispatchTask" resultMap="DispatchTask">
+		select A.*,B.alarm_name as alarmName from tb_dispatch_task A
+          left join tb_dispatch_alarm B on A.alarm_id = B.id
+            where A.id = #{id} and A.delete_flag=0
+	</select>
+    
+	<select id="getByTaskIdAndType" resultType="cn.com.yeexun.dispatch.entity.DispatchTask" resultMap="DispatchTask">
+		select *  from tb_dispatch_task 
+	      where task_id = #{taskId} and task_type = #{type} and ifnull(delete_flag, 0) &lt;&gt; 1
+	</select>
+	
+	<!-- <select id="getMetadataByPid3" resultType="java.util.List" resultMap="MetadataInfo">
+		select MD.* ,MM.metamodel_name from tb_metadata_info MD
+		         left join  tb_metamodel MM
+	             on  MD.metamodel_id = MM.id
+	             <if test="userId != null and userId != '' ">
+					left join tb_source_user T 
+				 	on MD.source_id = T.data_source_id
+				 </if>
+	             where MD.parent_id = #{metadataid} and MD.is_del=0 
+	             <if test="userId != null and userId != '' ">
+					and T.security_user_id=#{userId}
+				 </if>
+	</select> -->
+	
+	
+	<select id="findDispatchTaskPage" parameterType="cn.com.yeexun.dispatch.entity.DispatchTask" 
+			resultMap="DispatchTask">
+	    select * from tb_dispatch_task 
+	    where 1 = 1 and ifnull(delete_flag, 0) &lt;&gt; 1 
+        <if test="dispatchTask.taskType != null and dispatchTask.taskType != ''">  
+            and task_type = #{dispatchTask.taskType}
+        </if> 
+        <if test="dispatchTask.cycleType != null and dispatchTask.cycleType != ''">  
+            and cycle_type = #{dispatchTask.cycleType}
+        </if>
+        <if test="dispatchTask.taskName != null and dispatchTask.taskName != ''">  
+            and task_name like concat('%',#{dispatchTask.taskName},'%')
+        </if>
+        <if test="dispatchTask.status != null and dispatchTask.status != ''">  
+            and status = #{dispatchTask.status}
+        </if>
+        <if test="taskName != null and taskName != ''">  
+            and task_name like concat('%',#{taskName},'%') 
+         </if>
+	    order by create_time DESC
+	</select>
+	
+	<select id="overview" resultType="cn.com.yeexun.dispatch.entity.TaskOverviewVo">
+		select 
+			sum(
+				case status when '1' then 1 else 0 end
+			) as running_sum,
+			sum(
+				case status when '2' then 1 else 0 end
+			) as paused_sum,
+			sum(
+				case status when '3' then 1 else 0 end
+			) as finalized_sum,
+			sum(1) as total_sum
+		from tb_dispatch_task 
+		where ifnull(delete_flag, 0) &lt;&gt; 1
+	</select>
+	
+	<select id="findByTaskIdAndType" resultMap="DispatchTask">
+		select * from tb_dispatch_task 
+		where task_id = #{taskId} and task_type = #{type} 
+		and status = '1' and ifnull(delete_flag, 0) &lt;&gt; 1
+	</select>
+</mapper>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.com.yeexun.meta_data.dao.IMetadataAttrDao">
+
+	<resultMap type="cn.com.yeexun.meta_data.entity.MetadataAttrEntity" id="MetadataAttrEntity">
+		<id property="id" column="Id" />
+		<result property="metadataId" column="metadata_id" />
+		<result property="modelAttrId" column="model_attr_id" />
+		<result property="attrValue" column="attr_value" />
+		<result property="createTime" column="create_time" />
+		<result property="createUserId" column="create_user_id" />
+		<result property="name" column="name" />
+		<result property="code" column="code" />
+		<result property="lastModifyTime" column="last_modify_time" />
+		
+	</resultMap>
+	
+	<select id="getAttrbyMetaId" resultType="java.util.List" resultMap="MetadataAttrEntity">
+		select a.*,b.name,b.code from tb_metadata_attr a  
+        left join tb_metamodel_attr b on a.model_attr_id = b.id
+        where a.metadata_id = #{metadataId}
+	</select>
+	
+</mapper>

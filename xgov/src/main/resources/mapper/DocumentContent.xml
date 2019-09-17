@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.com.yeexun.documentManagement.dao.IDocumentContentDao">
+	<resultMap type="cn.com.yeexun.documentManagement.entity.DocumentContent" id="DocumentContent">
+		<id property="id" column="id" />
+		<result property="name" column="name" />
+		<result property="parentId" column="parent_id" />
+		<result property="userId" column="user_id" />
+		<result property="isdel" column="isdel" />
+		<result property="createTime" column="create_time" />
+		<result property="lastModifyTime" column="last_modify_time" />
+	</resultMap>
+	<select id="getAllContentByPid" resultType="java.util.List" resultMap="DocumentContent">
+	    select * from tb_document_contents where  isdel=#{isdel}
+	    <if test="parentId != null">  
+            and parent_id=#{parentId}
+        </if>
+	 </select>
+	 <select id="getAllContent" resultType="java.util.List" resultMap="DocumentContent">
+	    select * from tb_document_contents where  isdel=#{isdel}
+	 </select>
+	 
+	 <select id="getAllContentByName"  resultMap="DocumentContent">
+	    select * from tb_document_contents where  isdel=0 and parent_id = #{parentId} and name= #{name}
+	 </select>
+	
+</mapper>

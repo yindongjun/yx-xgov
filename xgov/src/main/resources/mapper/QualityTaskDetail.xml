@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.com.yeexun.qualityTask.dao.IQualityTaskDetailDao">
+
+	<resultMap type="cn.com.yeexun.qualityTask.entity.QualityTaskDetail" id="QualityTaskDetail">
+		<id property="id" column="Id" />
+		<result property="name" column="name" />
+		<result property="verifyType" column="verify_type" />
+		<result property="isStandard" column="is_standard" />
+		<result property="verifyDetail" column="verify_detail" />
+		<result property="deleteFlag" column="delete_flag" />
+		<result property="columnName" column="column_name" />
+		<result property="datasourceId" column="datasource_id" />
+		<result property="tableName" column="table_name" />
+		<result property="elementId" column="element_id" />
+		<result property="relationId" column="relation_id" />
+		<result property="enable" column="enable" />
+	</resultMap>
+	
+
+	<select id="findByDesignTableId" resultType="cn.com.yeexun.qualityTask.entity.QualityTaskDetail">
+		<!-- select * from quality_task_detail 
+		where design_table_id = #{designTableId} 
+		and verify_detail &lt;&gt; '1' 
+		and delete_flag = '0'
+		and enable = 1 -->
+		select * from quality_task_detail 
+		where datasource_id = #{datasourceId} 
+		and table_name = #{tableName}
+		and verify_type &lt;&gt; '1' 
+		and delete_flag = '0'
+		and enable = 1
+	</select>
+	
+	<select id="getVerifyDetailByDesignTableId" resultType="java.util.List" resultMap="QualityTaskDetail">
+		SELECT a.*,b.table_name AS tableName,b.task_name AS taskName 
+		FROM quality_task_detail a 
+		LEFT JOIN design_table_info b  
+		ON a.datasource_id = b.datasource_id and a.table_name = b.table_name 
+		where b.id = #{designTableId} 
+		and a.delete_flag = '0' 
+		<!-- and a.enable = 1 -->
+	</select>
+	
+	<!-- <select id="findSource2Task" resultType="cn.com.yeexun.dataSource.entity.DataSource">
+		select a.id, a.datasource_name 
+		from tb_data_source a 
+		join design_source_info b on a.id = b.source_id and b.delete_flag='0'
+		join design_table_info c on b.id = c.design_source_id and c.delete_flag='0' and c.status = '2'
+		join quality_task_detail d on c.id = d.design_table_id and d.delete_flag='0'
+		where ifnull(c.is_dispatch, 0) &lt;&gt; 1 and a.isdel=0
+		group by a.id, a.datasource_name
+	</select> -->
+	<select id="findSource2Task" resultMap="QualityTaskDetail">
+		<!-- select a.id, a.datasource_name 
+		from tb_data_source a 
+		join design_table_info b on a.id = b.datasource_id and b.delete_flag = '0' and b.status = '2'
+		where a.isdel = 0
+		group by a.id, a.datasource_name -->
+		
+		select datasource_id 
+		from design_table_info 
+		where delete_flag = '0' and status = '2' 
+		group by datasource_id
+	</select>
+	
+	<select id="findTableNamePage" resultType="cn.com.yeexun.qualityTask.entity.DesignTableInfo">
+		<!-- select a.*, c.datasource_name as source_name 
+		from design_table_info a 
+		join design_source_info b on b.id = a.design_source_id 
+		join tb_data_source c on c.id = b.source_id 
+		where b.source_id = #{sourceId} and a.delete_flag = '0' and b.delete_flag = '0' 
+		and a.status = '2' and ifnull(a.is_dispatch, 0) = 0
+		<if test="tableName != null and tableName != ''">  
+            and a.table_name like concat('%', #{tableName}, '%')
+        </if> -->
+        select a.*, c.datasource_name as source_name 
+        from design_table_info a 
+        join tb_data_source c on a.datasource_id = c.id 
+        where a.datasource_id = #{sourceId} and a.delete_flag = '0'
+        and a.status = '2' and ifnull(a.is_dispatch, 0) = 0 
+        <if test="tableName != null and tableName != ''">
+        	and a.table_name like concat('%', #{tableName}, '%')
+        </if>
+		
+	</select>
+	
+	<select id="findTaskTables" resultType="cn.com.yeexun.qualityTask.entity.DesignTableInfo">
+        <!-- select a.id design_id,a.table_name,c.datasource_name as source_name 
+        from design_table_info a 
+        join tb_data_source c on a.datasource_id = c.id 
+        <if test="taskId != null and taskId != ''">
+        	join design_task_table d on d.table_id = a.id
+        </if>
+        where a.datasource_id = #{sourceId} and a.delete_flag = '0' 
+        <if test="taskId != null and taskId != ''">
+        	and d.is_del = 0
+        </if>
+        and a.status = '2' 
+        <if test="tableName != null and tableName != ''">
+        	and a.table_name like concat('%', #{tableName}, '%')
+        </if>
+        <if test="taskId != null and taskId != ''">
+        	and d.task_id = #{taskId}
+        </if> -->
+        
+        select a.id design_id,a.table_name<!-- ,c.datasource_name as source_name  -->
+        from design_table_info a 
+        <!-- join tb_data_source c on a.datasource_id = c.id --> 
+        <if test="taskId != null and taskId != ''">
+        	join design_task_table d on d.table_id = a.id
+        </if>
+        where a.datasource_id = #{sourceId} and a.delete_flag = '0' 
+        <if test="taskId != null and taskId != ''">
+        	and d.is_del = 0
+        </if>
+        and a.status = '2' 
+        <if test="tableName != null and tableName != ''">
+        	and a.table_name like concat('%', #{tableName}, '%')
+        </if>
+        <if test="taskId != null and taskId != ''">
+        	and d.task_id = #{taskId}
+        </if>
+		
+	</select>
+	
+	<!-- <select id="getQualityTasksPage" resultType="cn.com.yeexun.qualityTask.entity.DesignTaskInfo">
+		select a.*, c.datasource_name as source_name from design_table_info a 
+		join design_source_info b on b.id = a.design_source_id 
+		join tb_data_source c on c.id = b.source_id 
+		and a.is_dispatch = 1
+		and a.delete_flag = '0' order by a.create_time desc
+		select a.*, c.datasource_name as sourceName 
+		from design_table_info a 
+		join tb_data_source c on c.id = a.datasource_id 
+		and a.is_dispatch = 1
+		<if test="taskName != null and taskName != ''">
+			and a.task_name like concat('%', #{taskName}, '%')
+		</if>
+		and a.delete_flag = '0' order by a.create_time desc 
+		
+		select c.*, b.datasource_id as datasource_id from design_task_table a 
+		join design_table_info b on a.table_id = b.id 
+		join design_task_info c on a.task_id = c.id 
+		group by c.id ,b.datasource_id 
+		order by c.create_time desc
+	</select> -->
+	
+	<update id="removeQualityDetail">
+		update quality_task_detail 
+		set delete_flag = '1' 
+		where design_table_id = #{tableDesignId} 
+		and ifnull(delete_flag, '0') = '0'
+	</update>
+	
+	<update id="removeQualityOnTableByType">
+		update quality_task_detail 
+		set delete_flag = '1' 
+		where datasource_id = #{datasourceId} 
+		and table_name = #{tableName}
+		and verify_type = #{verifyType} 
+		<if test="columnName != null and columnName != ''">
+        	and d.column_name = #{columnName}
+        </if>
+		and ifnull(delete_flag, '0') = '0'
+	</update>
+	
+	<update id="deleteByRelationIds" parameterType="java.util.List">
+		update quality_task_detail 
+		set delete_flag = '1' 
+		where delete_flag = '0' 
+		and relation_id in 
+		<foreach item="id" collection="list" open="(" separator="," close=")">#{id}</foreach>
+	</update>
+	
+	<select id="selectByElementId" resultMap="QualityTaskDetail">
+		select * from quality_task_detail 
+		where element_id = #{id} 
+		and delete_flag = 0
+	</select>
+	
+	<update id="deleteBySourceIdAndTableName">
+		update quality_task_detail 
+		set delete_flag = '1' 
+		where delete_flag = '0' 
+		and datasource_id = #{datasourceId} 
+		and table_name = #{tableName}
+	</update>
+	
+	<!-- <update id="disableRules">
+		update quality_task_detail 
+		set enable = #{enable} 
+		where id in (${qualityTaskDetailIds}) 
+		and delete_flag = '0'
+	</update> -->
+	
+	<select id="findByElementDistinct" resultMap="QualityTaskDetail">
+		select datasource_id, table_name 
+		from quality_task_detail 
+		where element_id = #{elementId} and delete_flag = '0'
+		group by datasource_id, table_name
+	</select>
+	
+	<select id="findByRelationId" resultMap="QualityTaskDetail">
+		select * from quality_task_detail 
+		where relation_id = #{relationId} and delete_flag = '0'
+	</select>
+	
+	<update id="remove">
+		update quality_task_detail 
+		set delete_flag = '1' 
+		where datasource_id = #{dataSoureId} 
+		and table_name = #{tableName} 
+		and column_name = #{column}
+		and ifnull(is_standard, 'Y') &lt;&gt; 'N'
+		and delete_flag = '0'
+	</update>
+	
+	<update id="deleteByElementId">
+		update quality_task_detail 
+		set delete_flag = '1' 
+		where element_id = #{elementId} 
+		and delete_flag = '0'
+	</update>
+	
+	<update id="deleteBySourceIdAndTabName">
+		update quality_task_detail 
+		set delete_flag = '1' 
+		where datasource_id = #{datasourceId} 
+		and table_name = #{tableName} 
+		<if test="verifyType != null and verifyType != ''"> 
+			and verify_type = #{verifyType}
+        </if>
+		and delete_flag = '0'
+	</update>
+	
+	<update id="removeQualityById" parameterType="string">
+		update quality_task_detail 
+		set delete_flag = '1' 
+		where id in (${qualityTaskDetailIds}) 
+		and is_standard = 'N'
+		and delete_flag = '0'
+	</update>
+	
+	<select id="findByDatasourceId" resultType="cn.com.yeexun.qualityTask.entity.QualityTaskDetail">
+		select a.* from quality_task_detail a 
+		left join design_table_info b 
+		on a.datasource_id = b.datasource_id 
+		and a.table_name = b.table_name 
+		where b.datasource_id = #{sourceId}
+		and b.status = '2'
+		and a.delete_flag &lt;&gt; '1'
+		and a.verify_type &lt;&gt; '1'
+	</select>
+</mapper>

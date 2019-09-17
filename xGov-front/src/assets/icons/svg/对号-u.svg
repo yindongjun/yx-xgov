@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="12px" height="12px" viewBox="0 0 12 12" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 54.1 (76490) - https://sketchapp.com -->
+    <title>对号</title>
+    <desc>Created with Sketch.</desc>
+    <g id="x-go-v" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" opacity="0.299999982">
+        <g id="数据质量-任务配置-请选择" transform="translate(-431.000000, -235.000000)">
+            <g id="选择/多选/red/xz" transform="translate(431.000000, 235.000000)">
+                <g id="对号">
+                    <rect id="Rectangle-2" fill="#F06273" x="0" y="0" width="12" height="12" rx="1.71428571"></rect>
+                    <path d="M5.30777323,8 C5.18947984,8 5.071654,7.95650712 4.98141438,7.86996973 L3.13500877,6.09214214 C2.95499708,5.91861899 2.95499708,5.63703621 3.13500877,5.46351306 C3.31548802,5.28998991 3.60771479,5.28998991 3.78772648,5.46351306 L5.30777323,6.92702612 L8.21227352,4.13047865 C8.39228521,3.95650712 8.68451198,3.95650712 8.86499123,4.13047865 C9.04500292,4.30400179 9.04500292,4.5851362 8.86499123,4.75865934 L5.63413209,7.86996973 C5.54389246,7.95650712 5.42559906,8 5.30777323,8 Z" id="Shape" fill="#FFFFFF" fill-rule="nonzero"></path>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

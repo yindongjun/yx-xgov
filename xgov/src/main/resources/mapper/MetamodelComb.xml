@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.com.yeexun.metaModel.dao.MetamodelCombDao">
+
+<resultMap type="cn.com.yeexun.metaModel.entity.MetamodelCombEntity" id="MetamodelCombEntity">
+		<id property="id" column="id" />
+		<result property="code" column="code" />
+		<result property="name" column="name" />
+		<result property="code" column="code" />
+		<result property="modelCode" column="model_code" />
+		<result property="modelName" column="model_name" />
+		<result property="modelId" column="model_id" />
+		<result property="combinModelId" column="combin_model_id" />
+		<result property="combinModelCode" column="combin_model_code" />
+		<result property="combinModelName" column="combin_model_name" />
+	</resultMap>
+
+	<select id="getByComModelId" resultType="java.util.List" resultMap="MetamodelCombEntity">
+		select * from tb_metamodel_comb where combin_model_id = #{modelId}
+	</select>
+ 	
+ 	<select id="getAllByComModelId" resultType="java.util.List" resultMap="MetamodelCombEntity">
+		select * from tb_metamodel_comb where 1=1 AND combin_model_id = #{modelId} or  model_id = #{modelId}
+	</select>
+</mapper>

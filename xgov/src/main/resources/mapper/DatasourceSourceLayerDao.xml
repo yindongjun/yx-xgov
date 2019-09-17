@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.com.yeexun.dataSource.dao.DatasourceSourceLayerDao">
+	
+	<select id="getByLayerIdPage" resultType="cn.com.yeexun.dataSource.entity.DatasourceSourceLayerEntity">
+		select * from tb_datasource_layer where layer_id = #{layerId}
+	</select>
+</mapper>

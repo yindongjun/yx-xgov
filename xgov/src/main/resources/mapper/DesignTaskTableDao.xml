@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.com.yeexun.qualityTask.dao.IDesignTaskTableDao">
+	<resultMap type="cn.com.yeexun.qualityTask.entity.DesignTaskTable" id="DesignTaskTable">
+		<id property="id" column="id" />
+		<result property="taskId" column="task_id" />
+		<result property="tableId" column="table_id" />
+		<result property="createTime" column="create_time" />
+		<result property="updateTime" column="update_time" />
+		<result property="isDel" column="is_del" />
+	</resultMap>
+	
+	<select id="findByTaskId" resultType="java.util.List" resultMap="DesignTaskTable">
+		select * from design_task_table 
+		where task_id = #{designTaskId} 
+		and is_del = 0
+	</select>
+	
+	<update id="deleteByTaskId">
+		update design_task_table 
+		set is_del = 1 
+		where task_id = #{designTaskId} 
+		and is_del = 0
+	</update>
+	
+</mapper>

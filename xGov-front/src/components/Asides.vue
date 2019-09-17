@@ -1,0 +1,485 @@
+<template>
+  <div
+    class="left-menu aside-container"
+    :style="{ background: backgroundColor }"
+  >
+    <el-menu
+      class="el-menu-vertical-demo"
+      :background-color="backgroundColor"
+      :text-color="textColor"
+      :default-active="
+       $route.matched.length >= 3 ? $route.matched[2].path : $route.matched[1].path
+      "
+      :active-text-color="activeTextColor"
+      router
+      :collapse="collapse"
+    >
+      <el-menu-item
+        v-for="(router, index) in routers"
+        :key="index"
+        :index="router.permission"
+      >
+        <i class="icon"><svg-icon :iconClass="router.iconName"></svg-icon></i>
+        <span slot="title">{{ router.name }} </span>
+      </el-menu-item>
+    </el-menu>
+  </div>
+</template>
+<script>
+export default {
+  name: "asides",
+  props: {
+    backgroundColor: {
+      type: String,
+      default: "#333743"
+    },
+    textColor: {
+      type: String,
+      default: "#fff"
+    },
+    activeTextColor: {
+      type: String,
+      default: "#fff"
+    },
+    menuType: {
+      type: String
+    }
+  },
+  data() {
+    return {
+      collapse: false,
+      menuList: []
+    };
+  },
+  computed: {
+    routers() {
+      return this.menuList;
+    }
+  },
+  mounted() {
+    // this.judgeWidnowSize();
+    this.getMenuList();
+    // window.onresize = this.judgeWidnowSize;
+  },
+  methods: {
+    judgeWidnowSize() {
+      if (window.innerWidth < 1280) {
+        this.collapse = true;
+      } else {
+        this.collapse = false;
+      }
+    },
+    getMenuList() {
+      let childList = [];
+      let menulist = [
+        {
+          child: [
+            {
+              del: "0",
+              icon: '{"name":"元模型","icon":"nav1-1"}',
+              id: 157,
+              indexs: 0,
+              name: "元模型",
+              os: "xgov",
+              pName: "元数据管理",
+              permission: "/metaData/default/model",
+              pid: 156,
+              resourceType: "menu",
+              urlList: ["gov/meta_model/**"]
+            },
+            {
+              del: "0",
+              icon: '{"name":"元数据采集","icon":"nav1-2"}',
+              id: 158,
+              indexs: 0,
+              name: "元数据采集",
+              os: "xgov",
+              pName: "元数据管理",
+              permission: "/metaData/default/collcet",
+              pid: 156,
+              resourceType: "menu",
+              urlList: [
+                "gov/collectTask/**",
+                "gov/data_source/**",
+                "gov/meta_data/**"
+              ]
+            },
+            {
+              del: "0",
+              icon: '{"name":"元数据维护","icon":"nav1-3"}',
+              id: 159,
+              indexs: 0,
+              name: "元数据维护",
+              os: "xgov",
+              pName: "元数据管理",
+              permission: "/metaData/default/care/business",
+              pid: 156,
+              resourceType: "menu",
+              urlList: ["gov/meta_data/**"]
+            },
+            {
+              del: "0",
+              icon: '{"name":"源数据分析","icon":"nav1-4"}',
+              id: 160,
+              indexs: 0,
+              name: "元数据分析",
+              os: "xgov",
+              pName: "元数据管理",
+              permission: "/metaData/default/analyze",
+              pid: 156,
+              resourceType: "menu",
+              urlList: ["gov/meta_data/search_meta"]
+            }
+          ],
+          del: "0",
+          icon: '{"name":"源数据分析","icon":"nav1-4"}',
+          id: 156,
+          indexs: 0,
+          name: "元数据管理",
+          os: "xgov",
+          pName: "xgov",
+          permission: "/metaData/default/model",
+          pid: 155,
+          resourceType: "menu",
+          urlList: []
+        },
+        {
+          child: [
+            {
+              del: "0",
+              icon: '{"name":"标准维护","icon":"nav2-1"}',
+              id: 162,
+              indexs: 0,
+              name: "标准维护",
+              os: "xgov",
+              pName: "数据标准",
+              permission: "/standard/default/meta",
+              pid: 161,
+              resourceType: "menu",
+              urlList: [
+                "gov/code/**",
+                "gov/data_element/**",
+                "gov/data_source/**"
+              ]
+            },
+            {
+              del: "0",
+              icon: '{"name":"标准分类","icon":"nav2-2"}',
+              id: 163,
+              indexs: 0,
+              name: "标准分类",
+              os: "xgov",
+              pName: "数据标准",
+              permission: "/standard/default/collect",
+              pid: 161,
+              resourceType: "menu",
+              urlList: [
+                "gov/data_set/**",
+                "gov/data_element/**",
+                "gov/data_source/**"
+              ]
+            },
+            {
+              del: "0",
+              icon: '{"name":"业务数据","icon":"nav2-3"}',
+              id: 164,
+              indexs: 0,
+              name: "业务代码",
+              os: "xgov",
+              pName: "数据标准",
+              permission: "/standard/default/businessGlossary",
+              pid: 161,
+              resourceType: "menu",
+              urlList: ["gov/code/**"]
+            },
+            {
+              del: "0",
+              icon: '{"name":"文档管理","icon":"nav2-4"}',
+              id: 165,
+              indexs: 0,
+              name: "文档管理",
+              os: "xgov",
+              pName: "数据标准",
+              permission: "/standard/default/documentManage",
+              pid: 161,
+              resourceType: "menu",
+              urlList: ["gov/documentcontent/**"]
+            },
+            {
+              del: "0",
+              icon: '{"name":"标准审核","icon":"nav2-5"}',
+              id: 166,
+              indexs: 0,
+              name: "标准审核",
+              os: "xgov",
+              pName: "数据标准",
+              permission: "/standard/default/standardCheck",
+              pid: 161,
+              resourceType: "menu",
+              urlList: ["gov/code/**", "gov/standard_audit/**"]
+            }
+          ],
+          del: "0",
+          icon: '{"name":"标准审核","icon":"nav2-5"}',
+          id: 161,
+          indexs: 0,
+          name: "数据标准",
+          os: "xgov",
+          pName: "xgov",
+          permission: "/standard/default/meta",
+          pid: 155,
+          resourceType: "menu",
+          urlList: []
+        },
+        {
+          child: [
+            {
+              del: "0",
+              icon: '{"name":"规则设计","icon":"nav3-1"}',
+              id: 168,
+              indexs: 0,
+              name: "规则设计",
+              os: "xgov",
+              pName: "数据质量",
+              permission: "/quality/default/design/list",
+              pid: 167,
+              resourceType: "menu",
+              urlList: ["gov/qualityDesignTable/**", "gov/data_source/**"]
+            },
+            {
+              del: "0",
+              icon: '{"name":"质量任务","icon":"nav3-2"}',
+              id: 169,
+              indexs: 0,
+              name: "质量任务",
+              os: "xgov",
+              pName: "数据质量",
+              permission: "/quality/default/task",
+              pid: 167,
+              resourceType: "menu",
+              urlList: [
+                "gov/qualityTask/**",
+                "gov/qualityDesignTable/**",
+                "gov/qualityTask/**"
+              ]
+            },
+            {
+              del: "0",
+              icon: '{"name":"问题数据","icon":"nav3-3"}',
+              id: 170,
+              indexs: 0,
+              name: "问题数据",
+              os: "xgov",
+              pName: "数据质量",
+              permission: "/quality/default/question",
+              pid: 167,
+              resourceType: "menu",
+              urlList: ["gov/qualityDesignTable/**"]
+            },
+            {
+              del: "0",
+              icon: '{"name":"数据源管理","icon":"nav6-1"}',
+              id: 193,
+              indexs: 0,
+              name: "质量报告",
+              os: "xgov",
+              pName: "数据质量",
+              permission: "/quality/default/report",
+              pid: 167,
+              resourceType: "menu",
+              urlList: ["gov/quality-report/**"]
+            },
+            {
+              del: "0",
+              icon: '{"name":"主数据管理","icon":"nav5-1"}',
+              id: 194,
+              indexs: 0,
+              name: "报告模板",
+              os: "xgov",
+              pName: "数据质量",
+              permission: "/quality/default/template",
+              pid: 167,
+              resourceType: "menu",
+              urlList: [
+                "gov/quality-report/showReportTemplte",
+                "gov/quality-report/addReportTemplte"
+              ]
+            }
+          ],
+          del: "0",
+          icon: '{"name":"质量任务","icon":"nav3-2"}',
+          id: 167,
+          indexs: 0,
+          name: "数据质量",
+          os: "xgov",
+          pName: "xgov",
+          permission: "/quality/default/design/list",
+          pid: 155,
+          resourceType: "menu",
+          urlList: []
+        },
+        {
+          child: [
+            {
+              del: "0",
+              icon: '{"name":"任务管理","icon":"nav4-1"}',
+              id: 175,
+              indexs: 0,
+              name: "任务管理",
+              os: "xgov",
+              pName: "调度中心",
+              permission: "/controlCenter/default/taskManage",
+              pid: 174,
+              resourceType: "menu",
+              urlList: ["gov/dispatchCenter/**", "gov/dispatch_alarm/**"]
+            },
+            {
+              del: "0",
+              icon: '{"name":"任务监控","icon":"nav4-2"}',
+              id: 176,
+              indexs: 0,
+              name: "任务监控",
+              os: "xgov",
+              pName: "调度中心",
+              permission: "/controlCenter/default/taskMonitor",
+              pid: 174,
+              resourceType: "menu",
+              urlList: ["gov/dispatchCenter/monitor/**"]
+            },
+            {
+              del: "0",
+              icon: '{"name":"告警设置","icon":"nav4-3"}',
+              id: 177,
+              indexs: 0,
+              name: "告警设置",
+              os: "xgov",
+              pName: "调度中心",
+              permission: "/controlCenter/default/warnSetting",
+              pid: 174,
+              resourceType: "menu",
+              urlList: ["gov/dispatch_alarm/**"]
+            }
+          ],
+          del: "0",
+          icon: "{}",
+          id: 174,
+          indexs: 0,
+          name: "调度中心",
+          os: "xgov",
+          pName: "xgov",
+          permission: "/controlCenter/default/taskManage",
+          pid: 155,
+          resourceType: "menu",
+          urlList: []
+        },
+        {
+          child: [
+            {
+              del: "0",
+              icon: '{"name":"主数据管理","icon":"nav5-1"}',
+              id: 179,
+              indexs: 0,
+              name: "主数据管理",
+              os: "xgov",
+              pName: "资产管理",
+              permission: "/property/default/maindata/list",
+              pid: 178,
+              resourceType: "menu",
+              urlList: ["gov/main_data/**"]
+            },
+            {
+              del: "0",
+              icon: '{"name":"资产目录","icon":"nav5-2"}',
+              id: 180,
+              indexs: 0,
+              name: "资产目录",
+              os: "xgov",
+              pName: "资产管理",
+              permission: "/dataMap",
+              pid: 178,
+              resourceType: "menu",
+              urlList: ["gov/dataMap/**"]
+            }
+          ],
+          del: "0",
+          icon: "{}",
+          id: 178,
+          indexs: 0,
+          name: "资产管理",
+          os: "xgov",
+          pName: "xgov",
+          permission: "/property/default/maindata/list",
+          pid: 155,
+          resourceType: "menu",
+          urlList: []
+        },
+        {
+          child: [
+            {
+              del: "0",
+              icon: '{"name":"数据源管理","icon":"nav6-1"}',
+              id: 182,
+              indexs: 0,
+              name: "数据源管理",
+              os: "xgov",
+              pName: "系统设置",
+              permission: "/systemSet/default/datasource",
+              pid: 181,
+              resourceType: "menu",
+              urlList: ["gov/data_source/**"]
+            }
+          ],
+          del: "0",
+          icon: "{}",
+          id: 181,
+          indexs: 0,
+          name: "系统设置",
+          os: "xgov",
+          pName: "xgov",
+          permission: "/systemSet/default/datasource",
+          pid: 155,
+          resourceType: "menu",
+          urlList: []
+        }
+      ];
+      let menuList1 = JSON.parse(localStorage.getItem('menuList')).find(c => c.os === 'xgov').child
+      let dataList = [...menuList1]
+      for (let i = 0; i < dataList.length; i++) {
+        if (dataList[i].name === this.menuType) {
+          childList = dataList[i].child;
+        }
+      }
+      childList.map(k => {
+        k.iconName = k.icon ? JSON.parse(k.icon).icon : '';
+      });
+      this.menuList = [...childList];
+    }
+  }
+};
+</script>
+
+<style lang="scss">
+.aside .el-menu-vertical-demo:not(.el-menu--collapse) {
+  width: 200px;
+  min-height: 400px;
+}
+.el-menu {
+  height: 100%;
+}
+.aside .el-menu .el-menu-item {
+  font-size: 16px;
+  user-select: none;
+}
+.aside .el-menu .el-menu-item i {
+  color: #ddd;
+  font-size: 20px;
+  margin-right: 20px;
+}
+.aside .el-menu .el-menu-item.is-active i {
+  color: #fff;
+}
+.aside .el-menu .el-menu-item.is-active {
+  background-color: #27638f !important;
+}
+</style>
+

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.com.yeexun.metaModel.dao.MetamodelDao">
+
+	<resultMap type="cn.com.yeexun.metaModel.entity.MetamodelEntity" id="metamodel">
+		<id property="id" column="id" />
+		<result property="parentId" column="parent_id"/>
+		<result property="code" column="code"/>
+		<result property="name" column="name"/>
+		<result property="icoId" column="ico_id" />
+		<result property="description" column="description"/>
+		<result property="createTime" column="create_time"/>
+		<result property="updateTime" column="update_time"/>
+		<result property="createUser" column="create_user"/>
+		<result property="updateUser" column="update_user"/>
+		<result property="isMenu" column="is_menu"/>
+		<result property="buildin" column="buildin"/>
+	</resultMap>
+	
+	<resultMap type="cn.com.yeexun.metaModel.entity.MetamodelDepEntity" id="metamodelDep">
+		<id property="id" column="id" />
+		<result property="code" column="code"/>
+		<result property="name" column="name"/>
+		<result property="modelId" column="model_id"/>
+		<result property="modelCode" column="model_code"/>
+		<result property="modelName" column="model_name"/>
+		<result property="depModelId" column="dep_model_id"/>
+		<result property="depModelCode" column="dep_model_code"/>
+		<result property="depModelName" column="dep_model_name"/>
+	</resultMap>
+	
+	<resultMap type="cn.com.yeexun.metaModel.entity.MetamodelAttrEntity" id ="metamodelAttr">
+		<id property="id" column="id" />
+		<result property="modelId" column="model_id"  />
+		<result property="code" column="code" />
+		<result property="name" column="name" />
+		<result property="type" column="type" />
+		<result property="length" column="length" />
+		<result property="readable" column="readable" />
+		<result property="required" column="required" />
+		<result property="buildin" column="buildin" />
+		<result property="controlsType" column="controls_type" />
+		<result property="sortKey" column="sort_key" />
+		<result property="createTime" column="create_time" />
+		<result property="updateTime" column="update_time" />
+		<result property="createUser" column="create_user" />
+		<result property="updateUser" column="update_user" />
+		
+	</resultMap>
+	
+	<resultMap type="cn.com.yeexun.metaModel.entity.MetamodelCombEntity" id="metamodelComb">
+		<id property="id" column="id" />
+		<result property="code" column="code" />
+		<result property="name" column="name" />
+		<result property="modelCode" column="model_code" />
+		<result property="modelName" column="model_name" />
+		<result property="modelId" column="model_id" />
+		<result property="combinModelId" column="combin_model_id" />
+		<result property="combinModelCode" column="combin_model_code" />
+		<result property="combinModelName" column="combin_model_name" />
+	</resultMap>
+	
+	
+	
+	
+	<!-- 根据 id 查询元模型的元模型 -->
+	<select id="findMetamodelById" resultType="java.util.List" resultMap="metamodel"> 
+		SELECT * FROM tb_metamodel WHERE id = #{modelId}
+	</select>
+
+	<!-- 根据元模型查找他的子元模型-->
+	<select id="findChildrenMetamodel" resultType="java.util.List" resultMap="metamodel" >
+		SELECT * FROM tb_metamodel WHERE parent_id=#{parentId}
+	</select>
+	<!-- 查询所有元模型类型，按id正序 -->
+	<select id="queryMetamodel" resultType="java.util.List" resultMap="metamodel">
+		SELECT mm.id ,mm.parent_id ,mm.code ,mm.name ,mm.ico_id ,mm.discription ,mm.create_user ,mm.update_user,mm.is_menu ,mm.buildin ,mm.create_time ,mm.update_time
+		FROM tb_metamodel as mm 
+		ORDER BY mm.id ASC
+	</select>
+
+	<!-- 根据元模型名字或code进行模糊查询 -->
+	<select id="fuzzyQueryMetamodel" resultType="java.util.List" resultMap="metamodel">
+		SELECT * 
+		FROM datagov.tb_metamodel where 
+		<if test="name != null and name != '' ">
+			name LIKE concat('%',#{name},'%') 
+		</if>
+		
+		<if test="code != null and code != ''">
+			OR code LIKE concat('%',#{code},'%') 
+		</if>
+	</select>
+
+</mapper>

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.com.yeexun.dataSet.dao.IDataSetDao">
+
+<resultMap type="cn.com.yeexun.dataSet.entity.DataSetEntity" id="DataSetEntity">
+		<id property="id" column="Id" />
+		<result property="parentId" column="parent_id" />
+		<result property="name" column="name" />
+		<result property="code" column="code" />
+		<result property="isMenu" column="is_menu" />
+		<result property="createUserId" column="create_user_id" />
+		<result property="createTime" column="create_time" />
+		<result property="lastModifyTime" column="last_modify_time" />
+		<result property="descrption" column="descrption" />
+		<result property="status" column="status" />
+		<result property="changeInfo" column="change_info" />
+		<result property="frontStatus" column="front_status" />
+		<result property="pname" column="pname" />
+		<result property="isdel" column="isdel" />
+	</resultMap>
+	
+	
+	<select id="getAllDataSet" resultType="java.util.List" resultMap="DataSetEntity">
+		 select * from tb_data_set where is_menu = "N" and isdel='0'
+	</select>
+	
+	<select id="getMenuByPid" resultType="java.util.List" resultMap="DataSetEntity">
+		 select * from tb_data_set where parent_id = #{pid} and is_menu = "Y" and isdel='0'
+	</select>
+	
+	<select id="getDateSetByPid" resultType="java.util.List" resultMap="DataSetEntity">
+		 select * from tb_data_set where parent_id = #{pid} and isdel='0'
+	</select>
+	
+	<select id="getMenuByName" resultType="java.util.List" resultMap="DataSetEntity">
+		 select * from tb_data_set where name = #{name} and is_menu = "Y" and isdel='0'
+	</select>
+	
+	<select id="getMenuByCode" resultType="java.util.List" resultMap="DataSetEntity">
+		 select * from tb_data_set where code = #{code} and is_menu = "Y" and isdel='0'
+	</select>
+	
+	<select id="serchSet" resultType="java.util.List" resultMap="DataSetEntity">
+		 select * from tb_data_set where is_menu = "N" and parent_id = #{pid} and isdel='0'
+		 <if test="name != null and name != ''">  
+        	and name = #{name}
+         </if> 
+         <if test="status != null">  
+      		and status = #{status}  
+  		</if>
+	</select>
+	
+	<select id="serchSetPage" resultType="java.util.List" resultMap="DataSetEntity">
+		 select * from tb_data_set where is_menu = "N" and parent_id = #{pid} and isdel='0'
+		 <if test="name != null and name != ''">  
+        	and name like concat('%',#{name},'%')
+         </if> 
+         <if test="status != null">  
+        	and status = #{status}
+         </if>
+         order by last_modify_time DESC
+	</select>
+	<select id="getMenuById" resultType="java.util.List" resultMap="DataSetEntity">
+		select A.*,B.name as pname from tb_data_set A 
+		left join tb_data_set B on A.parent_id=B.id
+		where A.id = #{id} and A.is_menu = "Y" and A.isdel='0'
+	</select>
+	
+	<update id="deleteList" >
+		UPDATE  tb_data_set SET isdel = '1'  WHERE id in 
+		<foreach collection="list" item="item" open="(" separator="," close=")">
+	  		${item}
+	 	</foreach>
+	</update>
+	
+	</mapper>

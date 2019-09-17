@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.com.yeexun.metaModel.dao.MetamodelAttrDao">
+
+	<resultMap type="cn.com.yeexun.metaModel.entity.MetamodelAttrEntity" id="MetamodelAttrEntity">
+		<id property="id" column="id" />
+		<result property="modelId" column="model_id" />
+		<result property="code" column="code" />
+		<result property="name" column="name" />
+		<result property="type" column="type" />
+		<result property="length" column="length" />
+		<result property="readable" column="readable" />
+		<result property="required" column="required" />
+		<result property="buildin" column="buildin" />
+		<result property="controlsType" column="controls_type" />
+		<result property="sortKey" column="sort_key" />
+		<result property="createTime" column="createTime" />
+		<result property="updateTime" column="update_time" />
+		<result property="createTime" column="create_time" />
+		<result property="createUser" column="create_user" />
+		<result property="updateUser" column="update_user" />
+	</resultMap>
+	<select id="findMetamodelAttrByModelCode" parameterType="String" resultType="cn.com.yeexun.metaModel.entity.MetamodelAttrEntity" resultMap = "MetamodelAttrEntity">
+		select a.* from tb_metamodel_attr a 
+		left join tb_metamodel b on a.model_id = b.id 
+		where b.code = #{modelCode}
+	</select>
+	
+	<select id="findMetamodelAttrByid" resultType="java.util.List" resultMap="MetamodelAttrEntity" >
+		select * from tb_metamodel_attr where model_id=#{modelId}
+ 	</select>
+</mapper>

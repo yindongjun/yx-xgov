@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.com.yeexun.qualityTask.dao.ICheckResultCountDao">
+
+	<resultMap type="cn.com.yeexun.qualityTask.entity.CheckResultCount" id="CheckResultCount">
+		<id property="id" column="id" />
+		<result property="designTableInfoId" column="design_table_info_id" />
+		<result property="taskHisId" column="task_his_id" />
+		<result property="tableName" column="table_name" />
+		<result property="datasourceId" column="datasource_id" />
+		<result property="errorDataNum" column="error_data_num" />
+		<result property="totalRows" column="total_rows" />
+		<result property="owner" column="owner" />
+		<result property="status" column="status" />
+		<result property="dealPeople" column="deal_people" />
+		<result property="dealTime" column="deal_time" />
+		<result property="dealComment" column="deal_comment" />
+		<result property="columnNames" column="column_names" />
+	</resultMap>
+	<!-- <select id="queryProblemDataListPage" resultType="java.util.List" resultMap="CheckResultCount">
+		select a.*,c.datasource_name as dataSourceName  
+		from check_result_count a 
+		left join design_source_info b 
+		on a.design_source_id = b.Id  
+		left join tb_data_source c 
+		on b.source_id = c.Id
+		where task_his_id IS NOT NULL and error_data_num &gt; 0
+		<if test="sourceId != null ">
+      		and b.source_id=#{sourceId}
+      	</if>
+      	<if test="status != null ">
+      		and a.status=#{status}
+      	</if>
+      	<if test="ownerId != null ">
+      		and a.owner_id=#{ownerId}
+      	</if>
+      	<if test="tableName != null and tableName != ''">  
+            and table_name like concat('%',#{tableName},'%') 
+        </if>
+      	order by a.update_time desc
+	</select> --> 
+	<select id="queryProblemDataListPage" resultType="java.util.List" resultMap="CheckResultCount">
+		<!-- select a.*, c.datasource_name as dataSourceName  
+		from check_result_count a 
+		left join tb_data_source c 
+		on a.datasource_id = c.Id
+		where task_his_id IS NOT NULL and error_data_num &gt; 0
+		<if test="sourceId != null ">
+      		and a.datasource_id=#{sourceId}
+      	</if>
+      	<if test="status != null ">
+      		and a.status=#{status}
+      	</if>
+      	<if test="ownerId != null ">
+      		and a.owner_id=#{ownerId}
+      	</if>
+      	<if test="tableName != null and tableName != ''">  
+            and table_name like concat('%',#{tableName},'%') 
+        </if>
+      	order by a.update_time desc -->
+      	select a.*, <!-- d.datasource_name as dataSourceName, --> c.task_name as task_name from check_result_count a 
+		join tb_dispatch_history b 
+		on a.task_his_id = b.id 
+		join tb_dispatch_task c 
+		on b.task_id = c.task_id 
+		<!-- join tb_data_source d 
+		on a.datasource_id = d.id  -->
+		where task_his_id IS NOT NULL and error_data_num &gt; 0 
+		and c.task_type = '1'
+		<if test="sourceId != null ">
+      		and a.datasource_id=#{sourceId}
+      	</if>
+      	<if test="status != null ">
+      		and a.status=#{status}
+      	</if>
+      	<if test="ownerId != null ">
+      		and a.owner_id=#{ownerId}
+      	</if>
+      	<if test="tableName != null and tableName != ''">  
+            and a.table_name like concat('%',#{tableName},'%') 
+        </if>
+        <if test="taskName != null and taskName != ''">  
+            and c.task_name like concat('%',#{taskName},'%') 
+        </if>
+        order by a.create_time desc
+	</select> 
+	
+	<select id="selectUndealTop5" resultType="java.util.List" resultMap="CheckResultCount">
+		select *, c.datasource_name as data_source_name from check_result_count a join (
+			select 
+				distinct max(a.id) as max_his_id,
+				d.datasource_id as datasource_id, 
+				d.table_name as table_name 
+			from tb_dispatch_history a 
+			join design_task_info b 
+			on a.task_id = b.id and a.task_type = '1' 
+			join design_task_table c 
+			on c.task_id = b.id 
+			join design_table_info d 
+			on d.id = c.table_id 
+			where a.status = '1'
+			and d.id in (${tableInfoIds})
+			group by d.datasource_id, d.table_name
+		) as b 
+		on a.task_his_id = b.max_his_id 
+		and a.datasource_id = b.datasource_id 
+		and a.table_name = b.table_name 
+		left join tb_data_source c 
+		on c.id = a.datasource_id 
+		where a.error_data_num > 0
+		order by a.error_data_num desc 
+		limit 5
+	</select>
+	
+	<select id="selectCountRows" resultType="int">
+		select ifnull(sum(a.error_data_num), 0) from check_result_count a join (
+			select 
+				distinct max(a.id) as max_his_id,
+				d.datasource_id as datasource_id, 
+				d.table_name as table_name 
+			from tb_dispatch_history a 
+			join design_task_info b 
+			on a.task_id = b.id and a.task_type = '1' 
+			join design_task_table c 
+			on c.task_id = b.id 
+			join design_table_info d 
+			on d.id = c.table_id 
+			where a.status = '1'
+			and d.id in (${tableInfoIds})
+			group by d.datasource_id, d.table_name
+		) as b 
+		on a.task_his_id = b.max_his_id 
+		and a.datasource_id = b.datasource_id 
+		and a.table_name = b.table_name 
+		and a.status = #{dealStatus}
+	</select>
+	
+	<select id="selectCountRotalRows" resultType="int">
+		select ifnull(sum(a.total_rows), 0) from check_result_count a join (
+			select 
+				distinct max(a.id) as max_his_id,
+				d.datasource_id as datasource_id, 
+				d.table_name as table_name 
+			from tb_dispatch_history a 
+			join design_task_info b 
+			on a.task_id = b.id and a.task_type = '1' 
+			join design_task_table c 
+			on c.task_id = b.id 
+			join design_table_info d 
+			on d.id = c.table_id 
+			where a.status = '1' 
+			and d.id in (${tableInfoIds})
+			group by d.datasource_id, d.table_name
+		) as b 
+		on a.task_his_id = b.max_his_id 
+		and a.datasource_id = b.datasource_id 
+		and a.table_name = b.table_name 
+	</select>
+</mapper>

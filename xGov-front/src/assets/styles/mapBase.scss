@@ -1,0 +1,520 @@
+
+.p-container{
+    height: 100%;width: 100%; overflow: hidden;
+    .container{
+        width: 1920px;
+        height: 1080px;
+        background: #07060c url("../../assets/images/map/bg/indexBg.png") no-repeat center center;
+        -webkit-transform-origin: top left;
+        -ms-transform-origin: top left;
+        -o-transform-origin: top left;
+        transform-origin: top left;
+        .main-title{
+            height: 90px;
+            padding: 10px 100px 0 40px;
+            .title{
+                float: left;
+                height: 80px;
+                line-height: 80px;
+                font-size: 36px;
+                background-image: -webkit-gradient(linear, 0 0, 0 bottom, from(#21a6e8), to(#17ddff));
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                text-shadow: 1px 1px 40px rgba(34, 164, 244, 0.7);
+            }
+        }
+        .menu-wrap{
+            position: relative;
+            .menu-hd{
+                cursor: pointer;
+                width: 100px;
+                height: 100px;
+                background: url(../../assets/images/map/icon/close.png) no-repeat;
+                -webkit-transform: scale(0.9);
+                -ms-transform: scale(0.9);
+                -o-transform: scale(0.9);
+                transform: scale(0.9);
+                position: absolute;
+                top: -70px;
+                z-index: 99;
+                right: 10px;
+                -webkit-transition: 0.3s;
+                -o-transition: 0.3s;
+                transition: 0.3s;
+                &:hover {
+                    -webkit-transform: scale(1);
+                    -ms-transform: scale(1);
+                    -o-transform: scale(1);
+                    transform: scale(1);
+                    -webkit-filter: brightness(1.5);
+                    filter: brightness(1.5);
+                }
+            }
+        }
+        .left-bg{
+            position: absolute;
+            left: 0;
+            top: 0;
+            background: url(../../assets/images/map/bg/bg2.png) no-repeat;
+            width: 410px;
+            height: 100%;
+            display: block;
+        }
+        .right-bg{
+            position: absolute;
+            right: -83px;
+            top: 0;
+            background: url(../../assets/images/map/bg/bg2.png) no-repeat;
+            width: 410px;
+            height: 100%;
+            display: block;
+        }
+        .wrapper{
+            -webkit-transform: scale(0.85);
+            -ms-transform: scale(0.85);
+            -o-transform: scale(0.85);
+            transform: scale(0.85);
+            position: fixed;
+            left: 70px;
+            right: -410px;
+            top: 90px;
+            bottom: 0;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            -webkit-transform-origin: top left;
+            -ms-transform-origin: top left;
+            -o-transform-origin: top left;
+            transform-origin: top left;
+            .index-menu {    //菜单
+                position: absolute;
+                top: 40px;
+                left: 0px;
+                z-index: 4;
+                .index-menu-title{
+                    font-size: 19px;color: #ffffff;margin: 12px;
+                }
+                li{
+                    margin-bottom: 50px;
+                    .info{
+                        width: 163px;
+                        height: 50px;
+                        color: #FFA450;
+                        background:url(../../assets/images/map/list/list.png) no-repeat; ;
+                        position: relative;
+                        span{
+                            display: inline-block;
+                            vertical-align: middle;
+                            text-align: center;
+                            line-height: 50px;
+                            &.value{
+                                overflow: hidden;
+                                text-overflow: ellipsis;
+                                white-space: nowrap;
+                                width: 120px;
+                                font-size: 32px;
+                                font-weight:bold;
+                            }
+                            &.unit{
+                                font-size: 20px;
+                            }
+                        }
+                    }
+                }
+            }
+            .cubeTitle {   //顶部样式
+                font-size: 23px;
+                color: #fff;
+                text-align: center;
+                letter-spacing: 2px;
+                width: 125px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+            .centerBg {
+                position: absolute;
+                left: 320px;
+                top: -40px;
+                background: url(../../assets/images/map/bg/bg1.png) no-repeat;
+                width: 1478px;
+                height: 1080px;
+                display: block;
+                z-index: -1;
+                pointer-events: none;
+            }
+            .modelOne {
+                .modelOne-title{
+                    position: absolute;
+                    color: rgba(158, 208, 255, 0.5);
+                    left: 670px;
+                    top: 610px;
+                    .cubeTitle {
+                        font-size: 18px;
+                        -webkit-transform: skew(-1deg, -30deg);
+                        -ms-transform: skew(-1deg, -30deg);
+                        -o-transform: skew(-1deg, -30deg);
+                        transform: skew(-1deg, -30deg);
+                    }
+                }
+                li {
+                    background: url(../../assets/images/map/index/e.png) no-repeat;
+                    width: 82px;
+                    height: 114px;
+                    position: absolute;
+                    cursor: pointer;
+                    &:nth-of-type(1) {
+                        left: 450px;
+                        top: 447px;
+                    }
+                    &:nth-of-type(2) {
+                        left: 568px;
+                        top: 390px;
+                    }
+                    &:nth-of-type(3) {
+                        left: 560px;
+                        top: 535px;
+                    }
+                    &:nth-of-type(4) {
+                        left: 675px;
+                        top: 474px;
+                    }
+                    &:hover {
+                        -webkit-filter: brightness(1.5);
+                        filter: brightness(1.5);
+                    }
+                }
+            }
+            .modelTwo{
+                .modelTwo-title{
+                    position: absolute;
+                    color: rgba(158, 208, 255, 0.5);
+                    left: 905px;
+                    top: 486px;
+                    .cubeTitle {
+                        font-size: 18px;
+                        -webkit-transform: skew(-1deg, -31deg);
+                        -ms-transform: skew(-1deg, -31deg);
+                        -o-transform: skew(-1deg, -31deg);
+                        transform: skew(-1deg, -31deg);
+                    }
+                }
+                li {
+                    background: url(../../assets/images/map/index/Square2.png) no-repeat;
+                    width: 52px;
+                    height: 108px;
+                    position: absolute;
+                    cursor: pointer;
+                    &:nth-of-type(1) {left: 670px;top: 328px;}
+                    &:nth-of-type(2) {left: 760px;top: 287px;}
+                    &:nth-of-type(3) {left: 756px;top: 390px;}
+                    &:nth-of-type(4) {left: 846px;top: 343px;}
+                    &:nth-of-type(5) {left: 846px;top: 450px;}
+                    &:nth-of-type(6) {left: 930px;top: 400px;}
+                    &:hover {
+                        -webkit-filter: brightness(1.5);
+                        filter: brightness(1.5);
+                    }
+                }
+            }
+            .modelThree{
+                .modelThree-title{
+                    position: absolute;
+                    color: rgba(158, 208, 255, 0.5);
+                    left: 930px;
+                    top: 315px;
+                    .cubeTitle {
+                        font-size: 20px;
+                        -webkit-transform: rotate3d(1, 1, 1, 46deg);
+                        transform: rotate3d(1, 1, 1, 46deg);
+                    }
+                }
+                .title-common{
+                    position: absolute;
+                    color: rgba(158, 208, 255, 0.5);
+                    .cubeTitle{
+                        font-size: 18px;
+                        -webkit-transform: rotate3d(1, 1, 1, 46deg);
+                        transform: rotate3d(1, 1, 1, 46deg);
+                    }
+                }
+                .modelThree-title-one{ left: 865px;top: 240px;}
+                .modelThree-title-two{left: 955px;top: 301px;}
+                .modelThree-title-three{left: 1042px;top: 356px;}
+                li {
+                    position: absolute;
+                    cursor: pointer;
+                    &:nth-of-type(1) {left: 945px;top: 200px;width: 49px;height: 100px; background: url(../../assets/images/map/index/data.png) no-repeat;}
+                    &:nth-of-type(2) {left: 1005px;top: 250px;width: 109px;height: 99px; background: url(../../assets/images/map/index/green.png) no-repeat;}
+                    &:nth-of-type(3) {left: 1120px;top: 315px;width: 68px;height: 99px; background: url(../../assets/images/map/index/text.png) no-repeat;}
+                    &:hover {
+                        -webkit-filter: brightness(1.5);
+                        filter: brightness(1.5);
+                    }
+                }
+            }
+            .modelFour{
+                .modelFour-title{
+                    position: absolute;
+                    color: rgba(158, 208, 255, 0.5);
+                    left: 1160px;
+                    top: 195px;
+                    .cubeTitle {
+                        font-size: 20px;
+                        -webkit-transform: rotate3d(1, 1, 1, 45deg);
+                        transform: rotate3d(1, 1, 1, 45deg);
+                    }
+                }
+                li {
+                    background: url(../../assets/images/map/index/data.png) no-repeat;
+                    width: 52px;
+                    height: 108px;
+                    position: absolute;
+                    cursor: pointer;
+                    &:nth-of-type(1) {left: 1145px;top: 110px;}
+                    &:nth-of-type(2) {left: 1200px;top: 78px;}
+                    &:nth-of-type(3) {left: 1218px;top: 155px;}
+                    &:nth-of-type(4) {left: 1274px;top: 122px;}
+                    &:nth-of-type(5) {left: 1288px;top: 200px;}
+                    &:nth-of-type(6) {left: 1343px;top: 162px;}
+                    &:hover {
+                        -webkit-filter: brightness(1.5);
+                        filter: brightness(1.5);
+                    }
+                }
+            }
+            .modelFive{
+                .modelFive-title{
+                    position: absolute;
+                    color: rgba(158, 208, 255, 0.5);
+                    left: 910px;
+                    top: 740px;
+                    .cubeTitle {
+                        font-size: 20px;
+                        -webkit-transform: rotate3d(1, 1, 1, 47deg);
+                        transform: rotate3d(1, 1, 1, 47deg);
+                    }
+                }
+                li {
+                    background: url(../../assets/images/map/index/Square4.png) no-repeat;
+                    width: 89px;
+                    height: 143px;
+                    position: absolute;
+                    cursor: pointer;
+                    &:nth-of-type(1) {left: 930px;top: 605px;}
+                    &:nth-of-type(2) {left: 1040px;top: 545px;}
+                    &:nth-of-type(3) {left: 1040px;top: 678px;}
+                    &:nth-of-type(4) {left: 1140px;top: 610px;}
+                    &:hover {
+                        -webkit-filter: brightness(1.5);
+                        filter: brightness(1.5);
+                    }
+                }
+            }
+            .modelSix{
+                .modelSix-title{
+                    position: absolute;
+                    color: rgba(158, 208, 255, 0.5);
+                    left: 1265px;
+                    top: 510px;
+                    .cubeTitle {
+                        font-size: 20px;
+                        -webkit-transform: rotate3d(1, 1, 1, 43deg);
+                        transform: rotate3d(1, 1, 1, 43deg);
+                    }
+                }
+                li {
+                    background: url(../../assets/images/map/index/Square5.png) no-repeat;
+                    width: 66px;
+                    height: 75px;
+                    position: absolute;
+                    cursor: pointer;
+                    &:nth-of-type(1) {left: 1265px;top: 435px;}
+                    &:nth-of-type(2) {left: 1335px;top: 395px;}
+                    &:nth-of-type(3) {left: 1340px;top: 477px;}
+                    &:nth-of-type(4) {left: 1410px;top: 435px;}
+                    &:nth-of-type(5) {left: 1415px;top: 520px;}
+                    &:nth-of-type(6) {left: 1488px;top: 475px;}
+                    &:hover {
+                        -webkit-filter: brightness(1.5);
+                        filter: brightness(1.5);
+                    }
+                }
+            }
+            .modelSeven{
+                .modelSeven-title{
+                    position: absolute;
+                    color: rgba(158, 208, 255, 0.5);
+                    left: 1460px;
+                    top: 373px;
+                    .cubeTitle {
+                        font-size: 20px;
+                        -webkit-transform: rotate3d(1, 1, 1, 43deg);
+                        transform: rotate3d(1, 1, 1, 43deg);
+                    }
+                }
+                li {
+                    background: url(../../assets/images/map/index/Square1.png) no-repeat;
+                    width: 54px;
+                    height: 92px;
+                    position: absolute;
+                    cursor: pointer;
+                    &:nth-of-type(1) {left: 1460px;top: 285px;}
+                    &:nth-of-type(2) {left: 1528px;top: 242px;}
+                    &:nth-of-type(3) {left: 1528px;top: 327px;}
+                    &:nth-of-type(4) {left: 1595px;top: 290px;}
+                    &:nth-of-type(5) {left: 1600px;top: 370px;}
+                    &:nth-of-type(6) {left: 1666px;top: 332px;}
+                    .seven-title{
+                        transform: rotate3d(1, 1, 1, 43deg) translateX(-10px) translateY(5px);
+                        position: absolute;
+                        right: -95px;
+                        top: -3px;
+                        color: #ffffff;
+                        opacity: 0;
+                        width: 170px;
+                        font-size: 18px;
+                        z-index: 9;
+                    }
+                    &:hover {
+                        -webkit-filter: brightness(1.5);
+                        filter: brightness(1.5);
+                        .seven-title{
+                            opacity: 1;
+                        }
+                    }
+                }
+            }
+            .line {   //线
+                position: absolute;
+                pointer-events: none;
+                z-index: 100;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                svg {
+                    position: absolute;
+                    left: 0;
+                    top: 0;
+                }
+            }
+            .ball {  //球
+                width: 10px;
+                height: 10px;
+                background-color: #6BFEDD;
+                border-radius: 50%;
+                position: absolute;
+                left: 0;
+                top: 0;
+            }
+            .ball::after {
+                content: '';
+                width: 20px;
+                height: 20px;
+                background-color: rgba(107,254,221,.3);
+                border-radius: 50%;
+                position: absolute;
+                left: 50%;
+                top: 50%;
+                margin-left: -10px;
+                margin-top: -10px;
+            }
+            .ball.ballRed {
+                background-color: red;
+            }
+        }
+        .popContent{
+            width: 230px;
+            height: 140px;
+            position: absolute;
+            top: 0;
+            .left-bk{
+                position: absolute;
+                width: 32px;
+                height: 145px;
+                z-index: 10;
+                top: 0;
+                left: -10px;
+            }
+            .popContent-inner{
+                position: absolute;
+                height: 112px;
+                width: 100%;
+                background:rgba(9,14,40,.8);
+                z-index: 9;
+                padding: 10px 15px;
+                .close-btn{
+                    position: absolute;
+                    width:17px;
+                    height:17px;
+                    background: url(../../assets/images/map/icon/de.png) no-repeat;
+                    right: 5px;
+                    top: 5px;
+                    cursor: pointer;
+                }
+                p{
+                    margin: 0;
+                    line-height: 30px;
+                    font-size:13px;
+                    color: rgba(225,229,236,1);
+                }
+                .showMore{
+                    display: block;
+                    position: absolute;
+                    right: 10px;
+                    bottom: 10px;
+                    cursor: pointer;
+                    font-size:13px;
+                    color: rgba(225,229,236,1);
+                }
+            }
+        }
+        .enterContent{
+            width: 230px;
+            height: 200px;
+            position: absolute;
+            .left-bk{
+                position: absolute;
+                width: 28px;
+                height: 200px;
+                z-index: 10;
+                top: -1px;
+                left: -10px;
+            }
+            .enterContent-inner{
+                position: absolute;
+                height: 160px;
+                width: 100%;
+                background:rgba(9,14,40,.8);
+                z-index: 9;
+                padding: 10px 15px;
+                .close-btn{
+                    position: absolute;
+                    width:17px;
+                    height:17px;
+                    background: url(../../assets/images/map/icon/de.png) no-repeat;
+                    right: 5px;
+                    top: 5px;
+                    cursor: pointer;
+                }
+                p{
+                    margin: 0;
+                    line-height: 30px;
+                    font-size:13px;
+                    color: rgba(225,229,236,1);
+                }
+                .showMore{
+                    display: block;
+                    position: absolute;
+                    right: 10px;
+                    bottom: 10px;
+                    cursor: pointer;
+                    font-size:13px;
+                    color: rgba(225,229,236,1);
+                }
+            }
+        }
+    }
+}

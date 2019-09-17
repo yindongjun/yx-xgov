@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.com.yeexun.dataElement.dao.IRelationShipDao">
+
+	<resultMap type="cn.com.yeexun.dataElement.entity.RelationShipEntity" id="RelationShipEntity">
+		<id property="id" column="Id" />
+		<result property="sourceId" column="source_id" />
+		<result property="tablename" column="tablename" />
+		<result property="fildname" column="fildname" />
+		<result property="dataElementId" column="data_element_id" />
+		<result property="createTime" column="create_time" />
+		<result property="isdel" column="isdel" />
+		<result property="lastModifyTime" column="last_modify_time" />
+		<result property="sourceName" column="sourceName" />
+		
+	</resultMap>
+     
+    <select id="getRelationBytable" resultType="java.util.List" resultMap="RelationShipEntity">
+		SELECT * FROM tb_element_relation r 
+		left join tb_data_element e on r.data_element_id = e.id 
+		where r.isdel = '0' and r.source_id = #{sourceId} and r.tablename = #{tableName}
+		and e.isdel = '0'
+	</select>
+	
+	<select id="getByElementId" resultType="java.util.List" resultMap="RelationShipEntity">
+		 select A.*<!-- ,B.datasource_name as sourceName --> from tb_element_relation A
+		<!--  left join tb_data_source B on A.source_id=B.id -->
+		 where A.isdel = '0' and A.data_element_id = #{elementId} 
+	</select>
+
+	<select id="getByColumn" resultType="java.util.List" resultMap="RelationShipEntity">
+		 select * from tb_element_relation where isdel = '0' and source_id = #{sourceId} 
+		 and tablename = #{tablename}
+		 and fildname = #{fildname}
+	</select>
+	
+	<select id="getRelEleCount" resultType="Integer">
+		select count(distinct data_element_id) from tb_element_relation where isdel = '0'
+	</select>
+	
+	<select id="getBySourceId" resultType="Integer">
+		select count(*) from tb_element_relation 
+		where isdel = '0' and source_id=#{sourceId}
+	</select>
+	
+	<select id="getRelTop10" resultType="java.util.List" resultMap="RelationShipEntity">
+		SELECT data_element_id,count( * ) AS count FROM tb_element_relation where isdel = '0'
+    	GROUP BY data_element_id
+    	ORDER BY count DESC
+    	LIMIT 10
+	</select>
+<!-- 	<select id="getByTableName" resultType="java.util.List" resultMap="RelationShipEntity">
+		SELECT * FROM tb_element_relation r 
+		left join tb_data_element e on r.data_element_id = e.id 
+		where r.isdel = '0' and r.source_id = #{sourceId} and r.tablename = #{tableName}
+		and e.isdel = '0'
+	</select> -->
+	
+	
+
+</mapper>

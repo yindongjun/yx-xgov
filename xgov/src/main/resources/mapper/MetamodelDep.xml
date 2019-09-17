@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.com.yeexun.metaModel.dao.MetamodelDepDao">
+
+<resultMap type="cn.com.yeexun.metaModel.entity.MetamodelDepEntity" id="MetamodelDepEntity">
+		<id property="id" column="id" />
+		<result property="code" column="code" />
+		<result property="name" column="name" />
+		<result property="code" column="code" />
+		<result property="modelId" column="model_id" />
+		<result property="modelCode" column="model_code" />
+		<result property="modelName" column="model_name" />
+		<result property="depModelId" column="dep_model_id" />
+		<result property="depModelCode" column="dep_model_code" />
+		<result property="depModelName" column="dep_model_name" />
+	</resultMap>
+
+	<select id="getByModelId" resultType="java.util.List" resultMap="MetamodelDepEntity">
+		select * from tb_metamodel_dep where model_id = #{modelId} or dep_model_id = #{modelId}
+	</select>
+ 
+</mapper>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.com.yeexun.qualityTask.dao.IDesignTaskInfoDao">
+
+
+	<select id="findTableNamePage" resultType="cn.com.yeexun.qualityTask.entity.DesignTaskInfo">
+        select a.*, c.datasource_name as source_name 
+        from design_task_info a 
+        join tb_data_source c on a.datasource_id = c.id 
+        where a.datasource_id = #{sourceId} and a.delete_flag = '0'
+        and a.status = '2' and ifnull(a.is_dispatch, 0) = 0 
+        <if test="tableName != null and tableName != ''">
+        	and a.table_name like concat('%', #{tableName}, '%')
+        </if>
+		
+	</select>
+	
+</mapper>

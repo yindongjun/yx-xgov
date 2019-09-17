@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.com.yeexun.dataElement.dao.IDataElementDao">
+
+<resultMap type="cn.com.yeexun.dataElement.entity.DataElementEntity" id="DataElementEntity">
+		<id property="id" column="Id" />
+		<result property="dataElementName" column="data_element_name" />
+		<result property="dataElementCode" column="data_element_code" />
+		<result property="dataElementType" column="data_element_type" />
+		<result property="dataElementAttr" column="data_element_attr" />
+		<result property="status" column="status" />
+		<result property="dataElementFlag" column="data_element_flag" />
+		<result property="definition" column="definition" />
+		<result property="codeset" column="codeset" />
+		<result property="regularExpression" column="regular_expression" />
+		<result property="remark" column="remark" />
+		<result property="createTime" column="create_time" />
+		<result property="changeInfo" column="change_info" />
+		<result property="dataRangeFront" column="data_range_front" />
+		<result property="dataRangeEnd" column="data_range_end" />
+		<result property="uniqueCode" column="unique_code" />
+		<result property="frontStatus" column="front_status" />
+		<result property="dataType" column="dataType" />
+		<result property="isdel" column="isdel" />
+		<result property="codesetName" column="codesetName" />
+		<result property="codeList" column="code_list" />
+		<result property="lastModifyTime" column="last_modify_time" />
+		<result property="count" column="count" />
+		<result property="tableName" column="table_name" />
+		<result property="fieldName" column="field_name" />
+		<result property="standardType" column="standard_type" />
+		<result property="standardAlias" column="standard_alias" />
+	</resultMap>
+	
+	<select id="showListByStatusPage" resultType="java.util.List" resultMap="DataElementEntity">
+		 select A.*,B.name as codesetName,CONCAT(data_element_type,IFNULL(data_element_attr,'')) as dataType 
+		 from tb_data_element A 
+		 left join tb_codeset B on A.codeset = B.id
+		 <if test="dataSourceId != null and dataSourceId != ''">  
+            inner join (
+            	select distinct source_id,data_element_id
+            	<!-- ,tablename  -->
+            	<if test="tableName != null and tableName != ''">  
+					,tablename 
+				</if>
+            	from tb_element_relation where isdel = '0'
+            ) as C 
+            on A.id = C.data_element_id and C.source_id=#{dataSourceId}
+       	 </if>
+       	 where A.isdel='0'
+         <!-- <if test="dataSourceId != null and dataSourceId != ''">  
+        	 and A.id = C.data_element_id  and C.source_id=#{dataSourceId}
+         </if> -->
+         <if test="tableName != null and tableName != ''">  
+            and C.tablename = #{tableName}
+         </if>
+          <if test="status != null and  status != -1 ">  
+      		and A.status =  #{status,jdbcType=INTEGER}  
+  		</if>
+         <if test="dataElementType != null and dataElementType != ''">  
+            and A.data_element_type = #{dataElementType} 
+         </if>
+         <if test="dataElementName != null and dataElementName != ''">  
+            and A.data_element_name like concat('%',#{dataElementName},'%') 
+         </if>
+         <!-- <if test="dataSourceId != null and dataSourceId != ''">  
+        	 GROUP BY A.id
+         </if> -->
+        ORDER BY A.last_modify_time DESC
+	</select>
+	
+	<select id="getByUniqueCode" resultType="java.util.List" resultMap="DataElementEntity">
+		 select * from tb_data_element where unique_code = #{uniqueCode} and isdel = '0'
+	</select>
+	
+	<select id="getByIds" resultType="java.util.List" resultMap="DataElementEntity">
+		 select A.*,B.name as codesetName,CONCAT(data_element_type,IFNULL(data_element_attr,'')) as dataType 
+		 from tb_data_element A 
+		 left join tb_codeset B on A.codeset = B.id
+		 where A.id in ${ids}
+		and A.isdel = '0'
+		
+	</select>
+	
+	<select id="getAllElement" resultType="java.util.List" resultMap="DataElementEntity">
+		  select A.*,B.name as codesetName,CONCAT(data_element_type,IFNULL(data_element_attr,'')) as dataType 
+		 from tb_data_element A 
+		 left join tb_codeset B on A.codeset = B.id
+		 <if test="dataSourceId != null and dataSourceId != ''">  
+            inner join (select distinct source_id,data_element_id,tablename from tb_element_relation) as C on A.id = C.data_element_id and C.source_id=#{dataSourceId}
+       	 </if>
+       	 where A.isdel='0' and A.status = 2
+         <if test="tableName != null and tableName != ''">  
+            and C.tablename = #{tableName}
+         </if>
+         <if test="dataElementType != null and dataElementType != ''">  
+            and A.data_element_type = #{dataElementType} 
+         </if>
+         <if test="dataElementName != null and dataElementName != ''">  
+            and A.data_element_name like concat('%',#{dataElementName},'%') 
+         </if>
+         <if test="dataSourceId != null and dataSourceId != ''">  
+            group by C.source_id, C.data_element_id
+       	 </if>
+         
+	</select>
+	
+	<select id="getElementSum" resultType="Integer">
+		 select count(id) from tb_data_element where isdel = '0'
+	</select>
+	 
+	<select id="getElementTop5" resultType="java.util.List" resultMap="DataElementEntity">
+		 select * from tb_data_element where isdel = '0' order by id desc limit 0,5
+	</select>
+	
+	<select id="getRelElementTop20" resultType="java.util.List" resultMap="DataElementEntity">
+		select A.*,B.count as count from tb_data_element A   
+     	inner join (SELECT data_element_id,count( * ) AS count 
+    	FROM tb_element_relation where isdel = '0'
+    	GROUP BY data_element_id
+    	ORDER BY count DESC
+    	LIMIT 20 )as B on A.id = B.data_element_id 
+    	where A.isdel = '0'
+	</select>
+	
+	
+	<select id="getCountByTime" resultType="Integer">
+		 select count(*) from tb_data_element where isdel = '0'
+		 <if test="date != null">
+		 	and create_time &lt;= #{date}
+		 </if>
+	</select>
+	
+	<!-- <select id="checkRelation" resultType="Integer">
+		 select count(*) from tb_quality_rule A 
+		 left join tb_quality_rule_detail B on A.id=B.rule_id
+		 where A.delete_flag = '0' and A.source_id=#{sourceId}
+		 and A.table_name=#{tableName} and B.column_name=#{column}
+	</select> -->
+	<select id="checkRelation" resultType="Integer">
+		select count(1) from quality_task_detail 
+		where delete_flag = '0' 
+		and datasource_id = #{sourceId} 
+		and table_name = #{tableName} 
+		and column_name = #{column}
+	</select>
+	
+	<select id="getElementByDatasourceId" resultType="java.util.List" resultMap="DataElementEntity">
+		select a.tablename as table_name, a.fildname as field_name, b.* 
+		from tb_element_relation a 
+		join tb_data_element b 
+		on b.id = a.data_element_id 
+		where a.source_id = #{datasourceId}
+		and a.isdel &lt;&gt; '1'
+	</select>
+	
+	</mapper>

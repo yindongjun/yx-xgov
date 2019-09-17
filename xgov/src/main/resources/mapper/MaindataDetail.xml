@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace ="cn.com.yeexun.mainData.dao.MainDataDetailDao" >
+	<resultMap type= "cn.com.yeexun.mainData.entity.MainDataDetail" id="maindataDetail">
+		<id	property = "id" column = "id" />
+		<result property = "dataSourceId" column = "data_source_id" /> 
+		<result property = "tableName" column = "table_name" /> 
+		<result property = "isdel" column = "isdel" /> 
+		<result property = "createUser" column = "create_user" /> 
+		<result property = "updateUser" column = "update_user" /> 
+		<result property = "createTime" column = "create_time" /> 
+		<result property = "updateTime" column = "update_time" /> 
+	</resultMap>
+	
+	<resultMap type="cn.com.yeexun.dataSource.entity.DataSource" id="DataSource">
+		<id property="id" column="id" />
+		<result property="datasourceName" column="datasource_name" />
+		<result property="databaseType" column="database_type" />
+		<result property="characterSet" column="character_set" />
+		<result property="ip" column="ip" />
+		<result property="port" column="port" />
+		<result property="url" column="url" />
+		<result property="userName" column="user_name" />
+		<result property="password" column="password" />
+		<result property="addTime" column="add_time" />
+		<result property="isdel" column="isdel" />
+		<result property="dbname" column="dbname" />
+		<result property="driver" column="driver" />
+		<result property="createTime" column="create_time" />
+		<result property="lastModifyTime" column="last_modify_time" />
+		<result property="schemasName" column="schemas_name" /> 
+		<result property="urlConfig" column="urlconfig" /> 
+		<result property="sourceLayerId" column="source_layer_id" />
+		<result property="departmentId" column="department_id" />
+	</resultMap>
+	
+	<!--获取主数据源下的表  -->
+	<select id="getMainTables" resultType="java.util.List" resultMap="maindataDetail">
+		SELECT * FROM main_data_detail WHERE main_data_id=#{mainDataId} and isdel=0
+	</select>
+
+	<!--删除主数据源下的所有表  -->
+	<update id="deleteTables" parameterType="java.lang.Long">
+		update main_data_detail set isdel=1 where main_data_id=#{mainDataId}
+	</update>
+	
+	<!-- 根据表id删除表 -->
+	<update	id="deleteTbles" parameterType="java.util.List">
+		update main_data_detail set isdel=1 where main_detail_id in 
+		<foreach collection="tableIds" index="index" item="id" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</update>
+	
+	<select id="getDataSourceId" resultType="long">
+		
+		SELECT data_source_id FROM main_data WHERE id=(
+			SELECT main_data_id FROM main_data_detail WHERE id=#{tableId}
+		)
+		
+	</select>
+	
+	<select id="getDataSourceByMainDataId" resultType="cn.com.yeexun.dataSource.entity.DataSource" resultMap="DataSource" >
+		SELECT * FROM tb_data_source WHERE id=(
+			SELECT data_source_id FROM main_data WHERE id=#{mainDataId}
+		)
+	</select>
+	
+	<!-- 通过id查表    通过名字模糊查询 -->
+	<select id="getById" resultType="cn.com.yeexun.mainData.entity.MainDataDetail" resultMap="maindataDetail">
+		SELECT * FROM main_data_detail WHERE 1=1
+		<if test="mainDataDetailId != null and mainDataDetailId != ''">
+			id=#{mainDataDetailId}
+		</if>
+		<if test="name != null and name !='' ">
+			table_name like CONCAT('%',#{name},'%')
+		</if>
+	</select>
+</mapper>

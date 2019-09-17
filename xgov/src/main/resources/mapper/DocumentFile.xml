@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.com.yeexun.documentManagement.dao.IDocumentFileDao">
+	<resultMap type="cn.com.yeexun.documentManagement.entity.DocumentFile" id="DocumentFile">
+		<id property="id" column="id" />
+		<result property="name" column="name" />
+		<result property="type" column="type" />
+		<result property="userId" column="user_id" />
+		<result property="filePath" column="file_path" />
+		<result property="createTime" column="create_time" />
+		<result property="lastModifyTime" column="last_modify_time" />
+		<result property="isdel" column="isdel" />
+		<result property="contentId" column="content_id" />
+	</resultMap>
+	
+	
+	<select id="getAllFileNum" resultType="java.util.List" resultMap="DocumentFile">
+	    select * from tb_document_management where isdel=0
+	 </select>
+	
+	<select id="getAllFilePage" resultType="java.util.List" resultMap="DocumentFile">
+	    select * from tb_document_management where isdel=#{isdel}
+	    <if test="contentId != null">  
+            and content_id=#{contentId}
+        </if>
+	 </select>
+	 
+	 <select id="getAllFileByIsdel" resultType="java.util.List" resultMap="DocumentFile">
+	    select * from tb_document_management where isdel=#{isdel}
+	 </select>
+	 
+	 <select id="getFileByNameAndType" resultType="java.util.List" resultMap="DocumentFile">
+	    select * from tb_document_management where isdel=0
+	    <if test="name != null and name != ''">  
+            and name=#{name}
+        </if>
+        <if test="type != null and type != ''">  
+            and type=#{type}
+        </if>
+        <if test="contentId != null">  
+            and content_id=#{contentId}
+        </if>
+	 </select>
+	 
+	 <select id="getFileNumByNowTime" resultType="Integer">
+		 select count(*) from tb_document_management where isdel = 0 and create_time &lt;= #{createTime}
+	</select>
+	
+	
+	
+</mapper>

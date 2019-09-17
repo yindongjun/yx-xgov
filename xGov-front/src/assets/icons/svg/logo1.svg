@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="22" height="24" viewBox="0 0 22 24">
+  <g fill="none" fill-rule="evenodd">
+    <rect width="21" height="23" x=".5" y=".5" stroke="#979797" opacity=".021"/>
+    <polyline fill="#FFF" fill-rule="nonzero" points="22 21.017 3.669 4.442 7.009 4.442 14.517 11.798 21.162 3 14.152 3 11.431 6.702 7.665 3 0 3 18.428 19.707 14.274 19.707 6.754 12.279 .121 21.029 7.119 21.029 9.852 17.327 13.606 21.029 20.117 21.029"/>
+  </g>
+</svg>

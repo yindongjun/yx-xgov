@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.com.yeexun.businessTerms.dao.ICodeSetDao">
+	<resultMap type="cn.com.yeexun.businessTerms.entity.CodeSet" id="CodeSet">
+		<id property="id" column="id" />
+		<result property="name" column="name" />
+		<result property="code" column="code" />
+		<result property="parentId" column="parent_id" />
+		<result property="createTime" column="create_time" />
+		<result property="lastModifyTime" column="last_modify_time" />
+		<result property="isCodeset" column="is_codeset" />
+		<result property="explanation" column="explanation" />
+		<result property="express" column="express" />
+		<result property="codeRule" column="code_rule" />
+		<result property="isdel" column="isdel" />
+		<result property="uniqueCode" column="unique_code" />
+		<result property="createPolicy" column="create_policy" />
+	</resultMap>
+	<select id="getAllCodeSet" resultType="java.util.List" resultMap="CodeSet">
+	    select * from tb_codeset where isdel=#{isdel}
+	</select>
+	
+	<select id="getAuditedCodeSet" resultType="java.util.List" resultMap="CodeSet">
+	    <!-- select * from tb_codeset 
+	    where id not in (
+	    	select a.id from tb_codeset a
+		    join tb_code b on a.id = b.codeset_id 
+		    where b.status &lt;&gt; '2' 
+		    and b.isdel = 0 
+		    group by a.id
+	    ) and isdel = 0 -->
+	    select * from tb_codeset a 
+	    join (
+	    	select codeset_id from tb_code 
+	    	where status = '2' and isdel = 0 
+	    	group by codeset_id
+	    ) as b 
+	    on a.id = b.codeset_id 
+	    and a.is_codeset = '0'
+	</select>
+	 
+	 <select id="getAllCodeSetNum" resultType="java.util.List" resultMap="CodeSet">
+	    select * from tb_codeset where isdel = 0 and is_codeset = "0"
+	 </select>
+	 
+	 <select id="getCodeSet" resultType="cn.com.yeexun.businessTerms.entity.CodeSet" resultMap="CodeSet">
+	    select * from tb_codeset where isdel=#{isdel} and id=#{id}
+	 </select>
+	 
+	 
+	 <select id="getCodeSetList" resultType="java.util.List" resultMap="CodeSet">
+		select * from tb_codeset where isdel=0 and parent_id = #{parentId} and is_codeset = #{isCodeset}
+      	<if test="name != null and name != ''">
+      		and name=#{name}
+      	</if>
+      	<!-- <if test="code != null and code != ''">
+      		or code=#{code})
+      	</if> -->
+      	
+	</select>
+	
+	<select id="getByParentId" resultType="java.util.List" resultMap="CodeSet">
+		select * from tb_codeset where isdel = 0 and parent_id = #{parentId}
+	</select>
+	
+	<select id="getCodesetDir" resultType="java.util.List" resultMap="CodeSet">
+		select * from tb_codeset where isdel = 0 and is_codeset = '1'
+	</select>
+</mapper>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.com.yeexun.qualityTask.dao.IQualityTaskLogDao">
+
+	<select id="getLogsByTable" resultType="cn.com.yeexun.qualityTask.entity.QualityTaskLog">
+		select * from quality_task_log 
+		where dispatch_his_id = #{taskHisId} 
+		and table_name = #{tableName} 
+		order by id
+	</select>
+</mapper>

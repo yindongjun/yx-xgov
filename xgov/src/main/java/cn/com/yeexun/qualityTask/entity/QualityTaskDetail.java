@@ -20,6 +20,8 @@ public class QualityTaskDetail extends Unique{
 	public static final String REGULAR_VERIFY = "6";
 	public static final String UNIQUE_VERIFY = "31";
 	public static final String RELATION_VERIFY = "32";
+	public static final String MAPPING_VERIFY = "33";
+	public static final String NOTEQUAL_VERIFY = "34";
 	
 	public static final int ENABLE = 1;
 	public static final int DISABLE = 0;

@@ -9,10 +9,13 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 
 import cn.com.common.ssm.engine.service.BaseService;
 import cn.com.yeexun.collectTask.service.ICollectTaskService;
@@ -37,8 +40,10 @@ import cn.com.yeexun.qualityTask.dao.IDesignTaskTableDao;
 import cn.com.yeexun.qualityTask.entity.DesignTableInfo;
 import cn.com.yeexun.qualityTask.entity.DesignTaskInfo;
 import cn.com.yeexun.qualityTask.entity.InitNode;
+import cn.com.yeexun.qualityTask.entity.MappingVerifyDetail;
 import cn.com.yeexun.qualityTask.entity.QualityTableCountVo;
 import cn.com.yeexun.qualityTask.entity.QualityTaskDetail;
+import cn.com.yeexun.qualityTask.entity.MappingVerifyDetail.MatchDetail;
 import cn.com.yeexun.qualityTask.service.IDesignTableInfoService;
 import cn.com.yeexun.qualityTask.service.IDesignTaskInfoService;
 import cn.com.yeexun.qualityTask.service.IQualityTaskDetailService;
@@ -567,6 +572,9 @@ public class DesignTableInfoService extends BaseService<DesignTableInfo> impleme
 					}
 					taskDetail.setDeleteFlag(Constant.NOT_DELETE);
 					taskDetail.setIsStandard("N");
+					if(taskDetail.getVerifyType().equals(QualityTaskDetail.MAPPING_VERIFY)){
+						taskDetail.setVerifyDetail(JSON.toJSONString(createMappingVerifyDetail(taskDetail)));
+					}
 					qualityTaskDetailService.insert(taskDetail);
 				}
 			} else {
@@ -591,7 +599,9 @@ public class DesignTableInfoService extends BaseService<DesignTableInfo> impleme
 				} else {
 					detail = taskDetails.get(0);
 					if (QualityTaskDetail.UNIQUE_VERIFY.equals(detail.getVerifyType()) 
-							|| QualityTaskDetail.RELATION_VERIFY.equals(detail.getVerifyType())) {
+							|| QualityTaskDetail.RELATION_VERIFY.equals(detail.getVerifyType())
+							|| QualityTaskDetail.MAPPING_VERIFY.equals(detail.getVerifyType())
+							|| QualityTaskDetail.NOTEQUAL_VERIFY.equals(detail.getVerifyType())) {
 						verifyType = detail.getVerifyType();
 						qualityTaskDetailService.deleteBySourceIdAndTabName(tableInfo.getDatasourceId()
 								, tableInfo.getTableName(), verifyType);
@@ -651,6 +661,9 @@ public class DesignTableInfoService extends BaseService<DesignTableInfo> impleme
 						}
 						taskDetail.setDeleteFlag(Constant.NOT_DELETE);
 						taskDetail.setIsStandard("N");
+						if(taskDetail.getVerifyType().equals(QualityTaskDetail.MAPPING_VERIFY)){
+							taskDetail.setVerifyDetail(JSON.toJSONString(createMappingVerifyDetail(taskDetail)));
+						}
 						qualityTaskDetailService.insert(taskDetail);
 					}
 					if (!DesignTableInfo.STATUS_DRAFT.equals(tableInfo.getStatus())) {
@@ -660,10 +673,32 @@ public class DesignTableInfoService extends BaseService<DesignTableInfo> impleme
 				}
 			}
 		} catch (Exception e) {
-			throw new CommonException("编辑自定义规则异常：", e);
+			throw new CommonException("编辑自定义规则异常："+e.getMessage(), e);
 		}
 		
 		
+	}
+	
+	private MappingVerifyDetail createMappingVerifyDetail(QualityTaskDetail taskDetail) throws Exception{
+		MappingVerifyDetail mapDetail = JSON.parseObject(taskDetail.getVerifyDetail(), MappingVerifyDetail.class);
+		String delimiter = mapDetail.getDelimiter();
+		String[] matchStr = mapDetail.getMatchChar().split(delimiter, -1);
+		String[] targetVal = mapDetail.getTargetValue().split(delimiter, -1);
+		if(matchStr.length != targetVal.length){
+			throw new Exception("检查值和映射字段值分割后的字段个数不匹配！");
+		}
+		List<MatchDetail> matchDetails = new ArrayList<MatchDetail>();
+		for(int i= 0; i<matchStr.length; i++){
+			MatchDetail tmp = new MatchDetail();
+			tmp.setMatchChar(matchStr[i]);
+			tmp.setMatchType(mapDetail.getMatchType());
+			if(StringUtils.isNotBlank(targetVal[i])){
+				tmp.setTargetValue(targetVal[i]);
+			}
+			matchDetails.add(tmp);
+		}
+		mapDetail.setMappingRule(matchDetails);
+		return mapDetail;
 	}
 
 	@Override

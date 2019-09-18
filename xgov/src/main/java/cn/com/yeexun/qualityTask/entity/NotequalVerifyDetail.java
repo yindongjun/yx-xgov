@@ -7,6 +7,8 @@ public class NotequalVerifyDetail {
 	private String delimiter;
 	
 	private String notequalValue;
+	
+	private String targetColumn;
 
 	public String getDelimiter() {
 		return delimiter;
@@ -27,6 +29,14 @@ public class NotequalVerifyDetail {
 	@Override
 	public String toString() {
 		return JSON.toJSONString(this);	
+	}
+
+	public String getTargetColumn() {
+		return targetColumn;
+	}
+
+	public void setTargetColumn(String targetColumn) {
+		this.targetColumn = targetColumn;
 	}
 
 }

@@ -14,6 +14,15 @@ public class MappingVerifyDetail {
 	private String isStandard;
 	private String targetColumn;
 	private List<MatchDetail> mappingRule;
+	
+	private String matchType;
+	
+	private String matchChar;
+	
+	private String targetValue;
+	
+	private String delimiter;
+	
 
 	public String getSourceColumn() {
 		return sourceColumn;
@@ -52,6 +61,73 @@ public class MappingVerifyDetail {
 		return JSON.toJSONString(this);
 	}
 	
+	public String getMatchType() {
+		return matchType;
+	}
+
+	public void setMatchType(String matchType) {
+		this.matchType = matchType;
+	}
+
+	public String getMatchChar() {
+		return matchChar;
+	}
+
+	public void setMatchChar(String matchChar) {
+		this.matchChar = matchChar;
+	}
+
+	public String getTargetValue() {
+		return targetValue;
+	}
+
+	public void setTargetValue(String targetValue) {
+		this.targetValue = targetValue;
+	}
+
+	public String getDelimiter() {
+		return delimiter;
+	}
+
+	public void setDelimiter(String delimiter) {
+		this.delimiter = delimiter;
+	}
+
+	public static class MatchDetail {
+		private String matchType;
+		private String matchChar;
+		private String targetValue;
+
+		public String getMatchType() {
+			return matchType;
+		}
+
+		public void setMatchType(String matchType) {
+			this.matchType = matchType;
+		}
+
+		public String getMatchChar() {
+			return matchChar;
+		}
+
+		public void setMatchChar(String matchChar) {
+			this.matchChar = matchChar;
+		}
+
+		public String getTargetValue() {
+			return targetValue;
+		}
+
+		public void setTargetValue(String targetValue) {
+			this.targetValue = targetValue;
+		}
+
+		@Override
+		public String toString() {
+			return JSON.toJSONString(this);
+		}
+
+	}
 
 }
 

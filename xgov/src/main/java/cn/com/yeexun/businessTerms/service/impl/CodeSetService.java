@@ -424,7 +424,7 @@ public class CodeSetService extends BaseService<CodeSet> implements
 					throw new CommonException(e.getMessage(), e);
 				}
 				if(b) {
-					throw new CommonException("代码名称或者代码重复！");
+					throw new CommonException("代码集名称或者代码重复！");
 				}
 				codeSetDao.insert(codeset);
 				// 更新uniqueCode

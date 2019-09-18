@@ -45,8 +45,8 @@ import cn.com.yeexun.qualityTask.entity.FormatVerifyDetail;
 import cn.com.yeexun.qualityTask.entity.InitNode;
 import cn.com.yeexun.qualityTask.entity.IntervalVerifyDetail;
 import cn.com.yeexun.qualityTask.entity.MappingVerifyDetail;
-import cn.com.yeexun.qualityTask.entity.NotequalVerifyDetail;
 import cn.com.yeexun.qualityTask.entity.MatchDetail;
+import cn.com.yeexun.qualityTask.entity.NotequalVerifyDetail;
 import cn.com.yeexun.qualityTask.entity.QualityTaskDetail;
 import cn.com.yeexun.qualityTask.entity.QualityTaskLog;
 import cn.com.yeexun.qualityTask.entity.RegularVerifyDetail;
@@ -799,7 +799,11 @@ public class DataCheck {
 		case QualityTaskDetail.MAPPING_VERIFY:
 			MappingVerifyDetail mappingVerifyDetail = mappingVerifyDetails.get(qualityTaskDetail.getColumnName());
 			String dataVal = null;
-			String realTargerVal = String.valueOf(data);
+			String realTargerVal = null;
+			if (data != null) {
+				realTargerVal = String.valueOf(data);
+			}
+			
 			try {
 //				realTargerVal = rs.getString(mappingVerifyDetail.getTargetColumn());
 				dataVal = rs.getString(mappingVerifyDetail.getSourceColumn());
@@ -812,22 +816,38 @@ public class DataCheck {
 				String matchType = matchDetail.getMatchType();
 				String expectTargetVal = matchDetail.getTargetValue();
 				if ("other".equals(matchDetail.getMatchChar())) {
-					isOk = realTargerVal.equals(expectTargetVal) ? true : false;
+					if (expectTargetVal == null) {
+						isOk = realTargerVal == expectTargetVal ? true : false;
+					} else {
+						isOk = realTargerVal.equals(expectTargetVal) ? true : false;
+					}
 					break;
 				} else {
 					if (MappingVerifyDetail.PRIFIX_MATCH.equals(matchType)) {
-						if (dataVal.startsWith(matchDetail.getMatchChar())) {
-							isOk = realTargerVal.equals(expectTargetVal) ? true : false;
+						if (dataVal != null && dataVal.startsWith(matchDetail.getMatchChar())) {
+							if (expectTargetVal == null) {
+								isOk = realTargerVal == expectTargetVal ? true : false;
+							} else {
+								isOk = realTargerVal.equals(expectTargetVal) ? true : false;
+							}
 							break;
 						}
 					} else if (MappingVerifyDetail.SUFFIX_MATCH.equals(matchType)) {
-						if (dataVal.endsWith(matchDetail.getMatchChar())) {
-							isOk = realTargerVal.equals(expectTargetVal) ? true : false;
+						if (dataVal != null && dataVal.endsWith(matchDetail.getMatchChar())) {
+							if (expectTargetVal == null) {
+								isOk = realTargerVal == expectTargetVal ? true : false;
+							} else {
+								isOk = realTargerVal.equals(expectTargetVal) ? true : false;
+							}
 							break;
 						}
 					} else if (MappingVerifyDetail.FULL_MATCH.equals(matchType)) {
-						if (dataVal.equals(matchDetail.getMatchChar())) {
-							isOk = realTargerVal.equals(expectTargetVal) ? true : false;
+						if (dataVal != null && dataVal.equals(matchDetail.getMatchChar())) {
+							if (expectTargetVal == null) {
+								isOk = realTargerVal == expectTargetVal ? true : false;
+							} else {
+								isOk = realTargerVal.equals(expectTargetVal) ? true : false;
+							}
 							break;
 						}
 					}

@@ -28,15 +28,15 @@ public class XgovApplication {
 		ConfigurableApplicationContext applicationContext = SpringApplication.run(XgovApplication.class, args);
 		env = applicationContext.getEnvironment();
 		
-		System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+//		System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
 //		ApplicationHome applicationHome = new ApplicationHome();
 //		File dir = applicationHome.getDir();
 //		System.out.println(dir.getAbsolutePath());
-		ApplicationHome h = new ApplicationHome(XgovApplication.class);
-        File jarF = h.getSource();
-        System.out.println(jarF.getParentFile().toString());
+//		ApplicationHome h = new ApplicationHome(XgovApplication.class);
+//        File jarF = h.getSource();
+//        System.out.println(jarF.getParentFile().toString());
         
-		System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+//		System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
 	}
 	
 	

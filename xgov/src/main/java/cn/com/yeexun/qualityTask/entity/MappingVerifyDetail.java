@@ -13,7 +13,7 @@ public class MappingVerifyDetail {
 	private String sourceColumn;
 	private String isStandard;
 	private String targetColumn;
-	private List<MatchDetail> matchDetails;
+	private List<MatchDetail> mappingRule;
 
 	public String getSourceColumn() {
 		return sourceColumn;
@@ -39,12 +39,12 @@ public class MappingVerifyDetail {
 		this.targetColumn = targetColumn;
 	}
 
-	public List<MatchDetail> getMatchDetails() {
-		return matchDetails;
+	public List<MatchDetail> getMappingRule() {
+		return mappingRule;
 	}
 
-	public void setMatchDetails(List<MatchDetail> matchDetails) {
-		this.matchDetails = matchDetails;
+	public void setMappingRule(List<MatchDetail> mappingRule) {
+		this.mappingRule = mappingRule;
 	}
 
 	@Override
@@ -52,41 +52,6 @@ public class MappingVerifyDetail {
 		return JSON.toJSONString(this);
 	}
 	
-	public static class MatchDetail {
-		private String matchType;
-		private String matchChar;
-		private String targetValue;
-
-		public String getMatchType() {
-			return matchType;
-		}
-
-		public void setMatchType(String matchType) {
-			this.matchType = matchType;
-		}
-
-		public String getMatchChar() {
-			return matchChar;
-		}
-
-		public void setMatchChar(String matchChar) {
-			this.matchChar = matchChar;
-		}
-
-		public String getTargetValue() {
-			return targetValue;
-		}
-
-		public void setTargetValue(String targetValue) {
-			this.targetValue = targetValue;
-		}
-
-		@Override
-		public String toString() {
-			return JSON.toJSONString(this);
-		}
-
-	}
 
 }
 

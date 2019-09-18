@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -43,6 +44,9 @@ import cn.com.yeexun.qualityTask.entity.EnumVerifyDetail;
 import cn.com.yeexun.qualityTask.entity.FormatVerifyDetail;
 import cn.com.yeexun.qualityTask.entity.InitNode;
 import cn.com.yeexun.qualityTask.entity.IntervalVerifyDetail;
+import cn.com.yeexun.qualityTask.entity.MappingVerifyDetail;
+import cn.com.yeexun.qualityTask.entity.NotequalVerifyDetail;
+import cn.com.yeexun.qualityTask.entity.MatchDetail;
 import cn.com.yeexun.qualityTask.entity.QualityTaskDetail;
 import cn.com.yeexun.qualityTask.entity.QualityTaskLog;
 import cn.com.yeexun.qualityTask.entity.RegularVerifyDetail;
@@ -104,6 +108,10 @@ public class DataCheck {
 	private Map<String, IntervalVerifyDetail> intervalVerifyDetails = new HashMap<>();
 	
 	private Map<String, RelationVerifyDetail> relationVerifyDetails = new HashMap<>();
+	
+	private Map<String, MappingVerifyDetail> mappingVerifyDetails = new HashMap<>();
+	
+	private Map<String, NotequalVerifyDetail> notequalVerifyDetails = new HashMap<>();
 	
 	private List<String> redisKeys = new ArrayList<>();
 	
@@ -273,7 +281,7 @@ public class DataCheck {
 						for (QualityTaskDetail qualityTaskDetail : thisColumnTasks) {
 							Map<String, Object> checkResult = null;
 							try {
-								checkResult = check(data, qualityTaskDetail, columnNames[i - 1]);
+								checkResult = check(data, qualityTaskDetail, columnNames[i - 1], rs);
 							} catch (Exception e) {
 								throw new DebugException(e, designTableInfo.getTableName()
 										, columnNames[i - 1], qualityTaskDetail.getVerifyDetail()
@@ -471,6 +479,16 @@ public class DataCheck {
 				relationVerifyDetails.put(columnName, relationVerifyDetail);
 				readDataToRedis();
 			}
+			if (QualityTaskDetail.MAPPING_VERIFY.equals(qualityTaskDetail.getVerifyType())) {
+				MappingVerifyDetail mappingVerifyDetail = JSON.parseObject(
+						qualityTaskDetail.getVerifyDetail(), MappingVerifyDetail.class);
+				mappingVerifyDetails.put(columnName, mappingVerifyDetail);
+			}
+			if (QualityTaskDetail.NOTEQUAL_VERIFY.equals(qualityTaskDetail.getVerifyType())) {
+				NotequalVerifyDetail notequalVerifyDetail = JSON.parseObject(
+						qualityTaskDetail.getVerifyDetail(), NotequalVerifyDetail.class);
+				notequalVerifyDetails.put(columnName, notequalVerifyDetail);
+			}
 		}
 		return qualityTaskMap;
 	}
@@ -642,7 +660,9 @@ public class DataCheck {
 		return regex;
 	}
 	
-	private Map<String, Object> check(Object data, QualityTaskDetail qualityTaskDetail, String columnName) {
+	private Map<String, Object> check(Object data, QualityTaskDetail qualityTaskDetail
+			, String columnName, ResultSet rs) {
+		LOGGER.info("校验规则：" + JSON.toJSONString(qualityTaskDetail));
 		boolean isOk = false;
 		Map<String, Object> resultMap = new HashMap<>();
 		String verifyType = qualityTaskDetail.getVerifyType();
@@ -774,6 +794,60 @@ public class DataCheck {
 			resultMap.put("isOk", isOk);
 			if (!isOk) {
 				resultMap.put("errorMsg", "字段关联比对校验");
+			}
+			break;
+		case QualityTaskDetail.MAPPING_VERIFY:
+			MappingVerifyDetail mappingVerifyDetail = mappingVerifyDetails.get(qualityTaskDetail.getColumnName());
+			String dataVal = null;
+			String realTargerVal = String.valueOf(data);
+			try {
+//				realTargerVal = rs.getString(mappingVerifyDetail.getTargetColumn());
+				dataVal = rs.getString(mappingVerifyDetail.getSourceColumn());
+			} catch (SQLException e) {
+				LOGGER.warn("映射校验获取映射字段值异常：", e);
+				throw new CommonException(e.getMessage(), e);
+			}
+			List<MatchDetail> matchDetails = mappingVerifyDetail.getMappingRule();
+			for (MatchDetail matchDetail : matchDetails) {
+				String matchType = matchDetail.getMatchType();
+				String expectTargetVal = matchDetail.getTargetValue();
+				if ("other".equals(matchDetail.getMatchChar())) {
+					isOk = realTargerVal.equals(expectTargetVal) ? true : false;
+					break;
+				} else {
+					if (MappingVerifyDetail.PRIFIX_MATCH.equals(matchType)) {
+						if (dataVal.startsWith(matchDetail.getMatchChar())) {
+							isOk = realTargerVal.equals(expectTargetVal) ? true : false;
+							break;
+						}
+					} else if (MappingVerifyDetail.SUFFIX_MATCH.equals(matchType)) {
+						if (dataVal.endsWith(matchDetail.getMatchChar())) {
+							isOk = realTargerVal.equals(expectTargetVal) ? true : false;
+							break;
+						}
+					} else if (MappingVerifyDetail.FULL_MATCH.equals(matchType)) {
+						if (dataVal.equals(matchDetail.getMatchChar())) {
+							isOk = realTargerVal.equals(expectTargetVal) ? true : false;
+							break;
+						}
+					}
+				}
+			}
+			resultMap.put("isOk", isOk);
+			if (!isOk) {
+				resultMap.put("errorMsg", "字段映射校验");
+			}
+			break;
+		case QualityTaskDetail.NOTEQUAL_VERIFY:
+			NotequalVerifyDetail notequalVerifyDetail = notequalVerifyDetails.get(qualityTaskDetail.getColumnName());
+			String delimiter = notequalVerifyDetail.getDelimiter();
+			String[] notequalValues = notequalVerifyDetail.getNotequalValue().split(delimiter);
+			List<String> notequalValueList = Arrays.asList(notequalValues);
+			String dataStr = String.valueOf(data);
+			isOk = notequalValueList.contains(dataStr) ? false : true;
+			resultMap.put("isOk", isOk);
+			if (!isOk) {
+				resultMap.put("errorMsg", "非法值校验");
 			}
 			break;
 		default:

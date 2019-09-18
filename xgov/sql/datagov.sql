@@ -382,9 +382,9 @@ CREATE TABLE `sign_in_log` (
 DROP TABLE IF EXISTS `tb_code`;
 CREATE TABLE `tb_code` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
-  `code` varchar(20) DEFAULT NULL COMMENT '代码序号',
+  `code` varchar(200) DEFAULT NULL COMMENT '代码序号',
   `codeset_id` int(10) DEFAULT NULL COMMENT '代码集id',
-  `name` varchar(20) DEFAULT NULL COMMENT '代码名称',
+  `name` varchar(500) DEFAULT NULL COMMENT '代码名称',
   `parent_id` int(10) DEFAULT NULL,
   `path` varchar(50) DEFAULT NULL COMMENT '所属目录',
   `status` varchar(10) DEFAULT NULL COMMENT '审核状态(0：草稿 1：待审核 2：已审核)',

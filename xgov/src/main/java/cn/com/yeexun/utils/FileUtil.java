@@ -292,11 +292,11 @@ public class FileUtil {
 	}
 	
 	public static String getJarRootDir() {
-//		ApplicationHome applicationHome = new ApplicationHome();
-//		File dir = applicationHome.getDir();
-//		LOGGER.debug("jar所在目录为：" + dir.getAbsolutePath());
-//		return dir.getAbsolutePath();
-		return "/opt/xgov-0.0.1-SNAPSHOT/";
+		ApplicationHome applicationHome = new ApplicationHome();
+		File dir = applicationHome.getDir();
+		LOGGER.debug("jar所在目录为：" + dir.getAbsolutePath());
+		return dir.getAbsolutePath();
+//		return "/opt/xgov-0.0.1-SNAPSHOT/";
 	}
 	
 	

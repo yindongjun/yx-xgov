@@ -501,7 +501,7 @@ public class DesignTableInfoService extends BaseService<DesignTableInfo> impleme
 	}*/
 
 	@Override
-	public void addUserDefineQuality(Long tableInfoId, List<QualityTaskDetail> taskDetails) {
+	public void addUserDefineQuality(Long tableInfoId, List<QualityTaskDetail> taskDetails, String verifyType) {
 		try {
 			/*if (taskDetails == null || taskDetails.size() <= 0) {
 				throw new CommonException("参数异常！");
@@ -584,10 +584,10 @@ public class DesignTableInfoService extends BaseService<DesignTableInfo> impleme
 	//				QualityTaskDetail example = new QualityTaskDetail();
 	//				example.setDatasourceId(tableInfo.getDatasourceId());
 	//				example.setTableName(tableInfo.getTableName());
-				String verifyType = null;
+//				String verifyType = null;
 				QualityTaskDetail detail = null;
 				if (taskDetails == null || taskDetails.size() <= 0) {
-					verifyType = "32";
+//					verifyType = "32";
 					qualityTaskDetailService.deleteBySourceIdAndTabName(tableInfo.getDatasourceId()
 							, tableInfo.getTableName(), verifyType);
 					List<QualityTaskDetail> details = qualityTaskDetailService.findByDesignTableId(

@@ -699,30 +699,34 @@ public class DataCheck {
 		case QualityTaskDetail.FORMAT_VERIFY:
 			// 枚举
 			// 格式校验
-			FormatVerifyDetail formatVerifyDetail = formatVerifyDetails.get(columnName);
-			String formatType = formatVerifyDetail.getFormatType();
-			if ("c".equals(formatType) || "c..".equals(formatType)) {
-				Pattern pattern = formatVerifyPatterns.get(formatVerifyDetail.getColumnName());
-				String dataStr = String.valueOf(data);
-				boolean matches = pattern.matcher(dataStr).matches();
-				/*byte[] bytes = null;
-				try {
-					bytes = dataStr.getBytes("GB2312");
-				} catch (UnsupportedEncodingException e) {
-					throw new CommonException("字符集错误！");
-				}*/
-				int stringLength = countStringlength(dataStr);
-				if ("c..".equals(formatType)) {
-					isOk = matches && stringLength <= Integer.parseInt(formatVerifyDetail.getFormatLength());
-				} else if ("c".equals(formatType) && StringUtils.isNotBlank(formatVerifyDetail.getFormatLength())) {
-					isOk = matches && stringLength == Integer.parseInt(formatVerifyDetail.getFormatLength());
-				} else {
-					isOk = matches;
-				}
-				
+			if (data == null) {
+				isOk = true;
 			} else {
-				Pattern pattern = formatVerifyPatterns.get(formatVerifyDetail.getColumnName());
-				isOk = pattern.matcher(String.valueOf(data)).matches();
+				FormatVerifyDetail formatVerifyDetail = formatVerifyDetails.get(columnName);
+				String formatType = formatVerifyDetail.getFormatType();
+				if ("c".equals(formatType) || "c..".equals(formatType)) {
+					Pattern pattern = formatVerifyPatterns.get(formatVerifyDetail.getColumnName());
+					String dataStr = String.valueOf(data);
+					boolean matches = pattern.matcher(dataStr).matches();
+					/*byte[] bytes = null;
+					try {
+						bytes = dataStr.getBytes("GB2312");
+					} catch (UnsupportedEncodingException e) {
+						throw new CommonException("字符集错误！");
+					}*/
+					int stringLength = countStringlength(dataStr);
+					if ("c..".equals(formatType)) {
+						isOk = matches && stringLength <= Integer.parseInt(formatVerifyDetail.getFormatLength());
+					} else if ("c".equals(formatType) && StringUtils.isNotBlank(formatVerifyDetail.getFormatLength())) {
+						isOk = matches && stringLength == Integer.parseInt(formatVerifyDetail.getFormatLength());
+					} else {
+						isOk = matches;
+					}
+					
+				} else {
+					Pattern pattern = formatVerifyPatterns.get(formatVerifyDetail.getColumnName());
+					isOk = pattern.matcher(String.valueOf(data)).matches();
+				}
 			}
 			resultMap.put("isOk", isOk);
 			if (!isOk) {

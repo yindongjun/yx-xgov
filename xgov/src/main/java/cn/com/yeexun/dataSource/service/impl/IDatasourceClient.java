@@ -23,7 +23,7 @@ public interface IDatasourceClient {
 	@RequestMapping(value = "/data_source/getAllDataSource",method = RequestMethod.GET)
 	String getAllDataSource(@RequestParam(value = "sourceName") String sourceName);
 
-	@RequestMapping(value = "/data_source/getSourceByIds",method = RequestMethod.GET)
+	@RequestMapping(value = "/data_source/getAllSourceByIds",method = RequestMethod.GET)
 	String getSourceByIds(@RequestParam(value = "sourceIds") String sourceIds);
 	
 	@RequestMapping(value = "/metadata_info/searchColumn",method = RequestMethod.POST)

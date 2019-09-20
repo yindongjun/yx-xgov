@@ -76,7 +76,7 @@ CREATE TABLE `design_change_info` (
   `current_detail` varchar(255) DEFAULT NULL COMMENT '现在的detail的id',
   `delete_flag` char(1) DEFAULT NULL COMMENT '删除标志',
   PRIMARY KEY (`Id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC COMMENT='质量设计中的变更信息';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='质量设计中的变更信息';
 
 -- ----------------------------
 -- Records of design_change_info
@@ -92,7 +92,7 @@ CREATE TABLE `design_source_info` (
   `rule_change_notice` varchar(255) DEFAULT NULL COMMENT '是否有变更通知，有-Y ,没有-N',
   `delete_flag` char(1) DEFAULT NULL COMMENT '删除标志 0-未删除  1-已删除',
   PRIMARY KEY (`Id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
 
 -- ----------------------------
 -- Records of design_source_info
@@ -118,7 +118,7 @@ CREATE TABLE `design_table_info` (
   `is_rule_change` char(1) DEFAULT NULL COMMENT '质量规则是否有变动，如果有-Y,该参数是针对状态为已提交和变更中的',
   `is_dispatch` tinyint(3) DEFAULT NULL COMMENT '是否已经配置了调度   0-否 1-是',
   PRIMARY KEY (`Id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC COMMENT='质量设计中表的质量任务详情';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='质量设计中表的质量任务详情';
 
 -- ----------------------------
 -- Records of design_table_info
@@ -370,7 +370,7 @@ CREATE TABLE `sign_in_log` (
   `Sign_ip` varchar(100) DEFAULT NULL COMMENT '登陆IP',
   `Sign_out_time` datetime DEFAULT NULL COMMENT '登出时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
 
 -- ----------------------------
 -- Records of sign_in_log
@@ -595,7 +595,7 @@ CREATE TABLE `tb_dispatch_history` (
   `status` char(1) DEFAULT NULL COMMENT '状态：0-执行中 1-成功  2-失败',
   `spent` varchar(255) DEFAULT NULL COMMENT '花费时间',
   PRIMARY KEY (`Id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC COMMENT='任务执行历史列表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='任务执行历史列表';
 
 -- ----------------------------
 -- Records of tb_dispatch_history
@@ -721,7 +721,7 @@ CREATE TABLE `tb_error_data` (
   `deal_time` datetime DEFAULT NULL COMMENT '处理时间',
   `deal_mesage` varchar(255) DEFAULT NULL COMMENT '处理信息',
   PRIMARY KEY (`Id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC COMMENT='问题数据';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='问题数据';
 
 -- ----------------------------
 -- Records of tb_error_data
@@ -1814,7 +1814,7 @@ CREATE TABLE `tb_quality_rule` (
   `update_time` varchar(255) DEFAULT NULL COMMENT '更新时间',
   `delete_flag` char(1) DEFAULT NULL COMMENT '删除标志',
   PRIMARY KEY (`Id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_quality_rule
@@ -1847,7 +1847,7 @@ CREATE TABLE `tb_quality_rule_detail` (
   `regular_name` varchar(255) DEFAULT NULL COMMENT '正则校验名称',
   `regular_value` varchar(255) DEFAULT NULL COMMENT '正则校验的值',
   PRIMARY KEY (`Id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_quality_rule_detail

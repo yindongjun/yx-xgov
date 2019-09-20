@@ -115,7 +115,7 @@ public interface IDesignTableInfoService extends IBaseService<DesignTableInfo>{
 
 	List<DesignTableInfo> findByIds(String ids);
 
-	void addUserDefineQuality(Long tableInfoId, List<QualityTaskDetail> taskDetails);
+	void addUserDefineQuality(Long tableInfoId, List<QualityTaskDetail> taskDetails, String verifyType);
 
 	List<Map<String, Object>> listReportTables();
 

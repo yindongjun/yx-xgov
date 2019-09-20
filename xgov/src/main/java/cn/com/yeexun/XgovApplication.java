@@ -1,12 +1,9 @@
 package cn.com.yeexun;
 
-import java.io.File;
-
 import javax.servlet.MultipartConfigElement;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.system.ApplicationHome;
 import org.springframework.boot.web.servlet.MultipartConfigFactory;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.openfeign.EnableFeignClients;
@@ -32,10 +29,10 @@ public class XgovApplication {
 //		ApplicationHome applicationHome = new ApplicationHome();
 //		File dir = applicationHome.getDir();
 //		System.out.println(dir.getAbsolutePath());
-//		ApplicationHome h = new ApplicationHome(XgovApplication.class);
-//        File jarF = h.getSource();
-//        System.out.println(jarF.getParentFile().toString());
-        
+////		ApplicationHome h = new ApplicationHome(XgovApplication.class);
+////        File jarF = h.getSource();
+////        System.out.println(jarF.getParentFile().toString());
+//        
 //		System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
 	}
 	

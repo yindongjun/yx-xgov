@@ -458,7 +458,9 @@ public class DesignTableInfoController {
 	  })
 	public String problemDetail(Long id, int start, int length){
 		Map<String, Object> map = new HashMap<String, Object>();
+		CheckResult check = null;
 		try {
+			
 			Page<CheckResult> page = new Page<>();
 			page.setStart(start);
 			page.setLength(length);
@@ -475,6 +477,7 @@ public class DesignTableInfoController {
 				CheckResultCount resultCount = checkResultCountService.getById(checkResultList.get(0).getResultCountId());
 				List<JSONObject> cloumnData = new ArrayList<JSONObject>();
 				for(CheckResult checkResult:checkResultList){
+					check = checkResult;
 					cloumnData.add(JSONObject.parseObject(checkResult.getDataDetail()));
 				}
 				map.put(CodeUtil.RESULT_DATA, cloumnData);
@@ -482,6 +485,12 @@ public class DesignTableInfoController {
 				map.put("tableHead",JSON.parseArray(resultCount.getColumnNames()));
 			}
 		} catch (Exception e) {
+			logger.error("\n\n\n\n\n\n\n\n\n");
+			logger.error(check);
+			if (check != null) {
+				logger.error(check.getDataDetail());
+			}
+			logger.error("\n\n\n\n\n\n\n\n\n");
 		    map = CodeUtil.getErrorRequestMap();
 		    e.printStackTrace();
 		}
@@ -835,11 +844,11 @@ public class DesignTableInfoController {
 	})
 	@RequestMapping(value = "/addUserDefineQuality",method = RequestMethod.POST)
 	@ResponseBody
-	public String addUserDefineQuality(Long tableInfoId, String jsonStr) {
+	public String addUserDefineQuality(Long tableInfoId, String jsonStr, String verifyType) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		try {
 			List<QualityTaskDetail> taskDetails = JSON.parseArray(jsonStr, QualityTaskDetail.class);
-			tableInfoService.addUserDefineQuality(tableInfoId, taskDetails);
+			tableInfoService.addUserDefineQuality(tableInfoId, taskDetails, verifyType);
 			map = CodeUtil.getSuccessMap();
 		} catch (CommonException e) {
 			logger.error("warn:", e);
